@@ -27,10 +27,11 @@
     }
 
     .p-5 {
-      background-color: rgba(255, 255, 255, 0.8); /* Przezroczyste białe tło dla sekcji tekstowej */
-      color: #000; /* Ciemny kolor tekstu w sekcji */
+      /* background-color: rgba(255, 255, 255, 0.8);   Przezroczyste białe tło dla sekcji tekstowej */
+      color: #ffffff; /* Jasny kolor tekstu w sekcji */
       border-radius: 10px; /* Zaokrąglone rogi sekcji tekstowej */
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny cień dla sekcji tekstowej */
+      text-shadow: 0px 4px 8px rgba(0, 0, 0, 1);
+      /*box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); Delikatny cień dla sekcji tekstowej */
     }
 
     .navbar {
@@ -55,6 +56,12 @@
     .mt-3 {
       font-family: 'Tahoma', sans-serif; /* Zastosowanie czcionki Arial do tekstu */
       font-size: 60px; /* Czcionka 20px */
+
+    }
+
+    @font-face { font-family: JuneBug; src: url('/fonts/font.ttf'); }
+    h1 {
+      font-family: JuneBug,serif
     }
 
     label {
@@ -67,7 +74,10 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">Tramwajowe Przedsiębiorstwo Miejskie</a>
+    <!-- Link do strony /index z obrazkiem -->
+    <a class="navbar-brand" href="/index">
+      <img src="/img/logo.png"  width="107" height="43" alt=""> <!-- Zmieniony tekst na obrazek -->
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -96,8 +106,8 @@
     <!-- Text Section (30%) -->
     <div class="col-md-4 col-12 d-flex align-items-center">
       <div class="p-5">
-        <!--Poyslę nad tym żeby to lepiej wyglądało-->
-        <label style="font-size:30px">Tramwajowe Przedsiębiorstwo Miejskie</label>
+        <!--Może jescze oyslę nad tym żeby to lepiej wyglądało-->
+        <label style="font-size:50px">Tramwajowe Przedsiębiorstwo Miejskie</label>
         <div style="font-size:20px" class="mt-3">
           Zapewniamy szybką i wygodną podróż w naszym mieście.
         </div>
