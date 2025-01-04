@@ -6,13 +6,58 @@
 
   <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 
+  <style>
+    body {
+      background: url('/img/login.png') no-repeat center center fixed; /* Ustawienie tła */
+      background-size: cover; /* Dopasowanie tła do rozmiaru ekranu */
+      color: #000000; /* Kolor tekstu dla kontrastu */
+      font-family: 'Arial', sans-serif; /* Czcionka Arial */
+      height: 100vh; /* Pełna wysokość widoku */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .navbar {
+      background-color: rgba(255, 255, 255); /* Lekko przezroczysty navbar */
+      color: #000; /* Ciemny tekst */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.7); /* Delikatnie przezroczyste tło */
+      border: 1px solid rgba(255, 255, 255, 0.7); /* Przezroczysta ramka */
+      border-radius: 15px; /* Zaokrąglone rogi */
+      padding: 30px;
+      width: 100%;
+      max-width: 400px; /* Maksymalna szerokość pola logowania */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Cień */
+      margin-top: 80px; /* Odstęp od nawigacji */
+    }
+
+    .form-group label {
+      font-weight: bold;
+    }
+
+    button.btn {
+      width: 100%; /* Guzik na całą szerokość */
+    }
+  </style>
+
 </head>
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+<nav class="navbar navbar-expand-lg navbar-light static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">BDBT Spring Boot Project - Part II</a>
+    <a class="navbar-brand" href="/index">
+      <img src="/img/logo.png" width="107" height="43" alt="">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -36,37 +81,26 @@
   </div>
 </nav>
 
+<div class="login-container">
+  <form method="post" th:action="@{/login}">
 
-<div class="container">
-
-  <div class="row">
-    <div class="col-md-4 mt-5">
-
-      <form method="post" th:action="@{/login}">
-
-        <div class="form-group">
-          <label for="login">Login:</label>
-          <input id="login" type="text" placeholder="Enter login" autocomplete="off" class="form-control" name="username"/>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input id="password" type="password" placeholder="Enter your password" autocomplete="off" class="form-control" name="password"/>
-        </div>
-
-        <div th:if="${param.error}" style="color:red; margin-bottom:15px">
-          ERROR: Invalid username or password!
-        </div>
-
-        <button class="btn btn-primary" type="submit" value="Sign In">Login</button>
-      </form>
-
-
-
+    <div class="form-group">
+      <label for="login">Login:</label>
+      <input id="login" type="text" placeholder="Enter login" autocomplete="off" class="form-control" name="username"/>
     </div>
-  </div>
-</div>
 
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input id="password" type="password" placeholder="Enter your password" autocomplete="off" class="form-control" name="password"/>
+    </div>
+
+    <div th:if="${param.error}" style="color:#ff0000; margin-bottom:15px;font-size: 17px;">
+      <b>ERROR: Invalid username or password!</b>
+    </div>
+
+    <button class="btn btn-primary" type="submit" value="Sign In">Login</button>
+  </form>
+</div>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
@@ -74,3 +108,4 @@
 
 </body>
 </html>
+
