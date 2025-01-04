@@ -47,6 +47,10 @@
     button.btn {
       width: 100%; /* Guzik na całą szerokość */
     }
+
+    .show-password {
+      margin-top: 5px;
+    }
   </style>
 
 </head>
@@ -92,6 +96,9 @@
     <div class="form-group">
       <label for="password">Hasło:</label>
       <input id="password" type="password" placeholder="Wpisz hasło" autocomplete="off" class="form-control" name="password"/>
+      <div class="show-password">
+        <input type="checkbox" id="show-password-toggle"> Pokaż hasło
+      </div>
     </div>
 
     <div th:if="${param.error}" style="color:#ff0000; margin-bottom:15px;font-size: 17px;">
@@ -105,7 +112,17 @@
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+  // Toggle visibility of the password
+  document.getElementById('show-password-toggle').addEventListener('change', function() {
+    const passwordField = document.getElementById('password');
+    if (this.checked) {
+      passwordField.type = 'text';
+    } else {
+      passwordField.type = 'password';
+    }
+  });
+</script>
 
 </body>
 </html>
-
