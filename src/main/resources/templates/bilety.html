@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bilety</title>
+
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+  <style>
+    body {
+      background: linear-gradient(to left, rgb(254, 202, 202), rgb(220, 38, 38)); /* Gradient jako tło */
+      color: #fff; /* Kolor tekstu dla kontrastu */
+      font-family: 'Arial', sans-serif; /* Czcionka Arial */
+    }
+    .navbar {
+      background-color: #fff; /* Białe tło dla navbar */
+      color: #000; /* Ciemny tekst */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar a.nav-link {
+      color: #000; /* Ustawienie ciemnego koloru linków */
+    }
+
+    .navbar a.nav-link:hover {
+      color: #dc3545; /* Kolor tekstu linków po najechaniu */
+    }
+
+  </style>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light static-top">
+  <div class="container">
+    <!-- Link do strony /index z obrazkiem -->
+    <a class="navbar-brand" href="/index">
+      <img src="/img/logo.png"  width="107" height="43" alt=""> <!-- Zmieniony tekst na obrazek -->
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/index}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/main}">Main</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Bilety
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/rozklad}">Rozkład jazdy</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/main}">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</body>
+</html>

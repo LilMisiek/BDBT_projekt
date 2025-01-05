@@ -15,14 +15,14 @@
       color: #fff; /* Kolor tekstu dla kontrastu */
       font-family: 'Arial', sans-serif; /* Czcionka Arial */
     }
-  
+
     .carousel-container {
-      height: 100vh; /* Wysokość karuzeli równa wysokości widoku przeglądarki */
+      height: 92.6vh; /* Wysokość karuzeli równa wysokości widoku przeglądarki */
     }
 
     .carousel-inner img {
       object-fit: cover;
-      height: 100vh; /* Wypełnia całą wysokość prawej kolumny */
+      height: 92.6vh; /* Wypełnia całą wysokość prawej kolumny */
       width: 100%; /* Wypełnia całą szerokość prawej kolumny */
     }
 
@@ -77,7 +77,7 @@
   <div class="container">
     <!-- Link do strony /index z obrazkiem -->
     <a class="navbar-brand" href="/index">
-      <img src="/img/logo.png"  width="107" height="43" alt=""> <!-- Zmieniony tekst na obrazek -->
+      <img src="/img/logo.png" width="107" height="43" alt=""> <!-- Zmieniony tekst na obrazek -->
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,6 +92,12 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/main}">Main</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/bilety}">Bilety</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/rozklad}">Rozkład jazdy</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/main}">Login</a>
