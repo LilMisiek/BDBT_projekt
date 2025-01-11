@@ -45,13 +45,20 @@
             color: #c82333; /* Ciemniejszy odcień czerwonego tekstu po najechaniu */
         }
 
+        .navbar-text {
+            color: #007bff; /* Niebieski kolor tekstu */
+            margin-right: 1rem; /* Odstęp od przycisku Wyloguj */
+            font-weight: bold;
+            margin-bottom: 0; /* Ustawienie marginesu dolnego na 0 */
+        }
+
     </style>
 
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light static-top">
     <div class="container">
-        <a class="navbar-brand" href="/index">
+        <a class="navbar-brand" href="/index_admin">
             <img src="/img/logo.png" width="107" height="43" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
@@ -61,10 +68,10 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/index}">Strona główna</a>
+                    <a class="nav-link" th:href="@{/index_admin}">Strona główna</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/bilety}">Bilety</a>
+                    <a class="nav-link" th:href="@{/bilety_admin}">Bilety</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Rozkłady jazdy
@@ -72,9 +79,10 @@
                     </a>
                 </li>
             </ul>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <span class="navbar-text">Zostałes zalogowany jako Admin</span>
                 <li class="nav-item">
-                    <a class=" login-btn" th:href="@{/main}">Zaloguj</a>
+                    <a class="login-btn" th:href="@{/main_admin}">Wyloguj</a>
                 </li>
             </ul>
         </div>
