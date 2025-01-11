@@ -1,12 +1,13 @@
 package bada_bdbt_project.SpringApplication;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -28,6 +29,18 @@ public class AppController implements WebMvcConfigurer {
     @Controller
     public class DashboardController
     {
+
+        @Autowired
+        private BiletyDAO dao;
+
+        @RequestMapping("/bilety")
+        public String showBilety(Model model) {
+
+            List<Bilety> listBilety = dao.list();
+            model.addAttribute("listBilety", listBilety);
+            return "bilety";
+        }
+
         @RequestMapping
                 ("/main"
                 )
@@ -49,6 +62,7 @@ public class AppController implements WebMvcConfigurer {
             }
         }
     }
+
     @RequestMapping(value={"/main_admin"})
     public String showAdminPage(Model model) {
         return "admin/main_admin";

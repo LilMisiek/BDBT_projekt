@@ -79,6 +79,29 @@
       </ul>
     </div>
   </div>
+
 </nav>
+<!-- Table -->
+<table border = "1" cellpadding = "10"> <!-– border –
+  obramowanie, cellpadding – rozmiar komórki -->
+  <!-- Table header -->
+  <thead>
+  <tr> <!-- Table row -->
+    <th>Nr biletu</th> <!–- Table column -->
+    <th>Cena</th>
+    <th>Nazwa</th>
+    <th>Czas waznosci</th>
+  </tr>
+  </thead>
+  <!-- Table body -->
+  <tbody>
+  <tr th:each = "bilety : ${listBilety}">
+    <td th:text = "${bilety.Nr_biletu}">Nr biletu</td>
+    <td th:text = "${bilety.Cena}">Cena</td>
+    <td th:text = "${bilety.Nazwa}">Nazwa</td>
+    <td th:text = "${bilety.Czas_waznosci}">Czas waznosci</td>
+  </tr>
+  </tbody>
+</table>
 </body>
 </html>
