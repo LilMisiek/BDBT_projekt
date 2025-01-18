@@ -2,40 +2,29 @@ package bada_bdbt_project.SpringApplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-    @Repository
-    public class LinieDAO {
-        /* Import org.springframework.jd....Template */
-        private JdbcTemplate jdbcTemplate;
-        @Autowired
-        public LinieDAO(JdbcTemplate jdbcTemplate) {
-            this.jdbcTemplate = jdbcTemplate;
-        }
+@Repository
+public class LinieDAO {
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-        /* Import java.util.List */
-        public List<Linie> list(){
-            String sql = "SELECT * FROM Linie";
-            List<Linie> listLinie = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Linie.class));
-            return listLinie;
-        }
-        /* Insert – wstawianie nowego wiersza do bazy */
-        public void save(Linie linie) {
-        }
-        /* Read – odczytywanie danych z bazy */
-        public Linie get(int id) {
-            return null;
-        }
-        /* Update – aktualizacja danych */
-        public void update(Linie linie) {
-        }
-        /* Delete – wybrany rekord z danym id */
-        public void delete(int id) {
-        }
-
+    @Autowired
+    public LinieDAO(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+    // Pobieranie wszystkich linii
+    public List<Linie> list() {
+        String sql = "SELECT nr_linii AS nrLinii, " +
+                "nr_przedsiebiorstwa AS nrPrzedsiebiorstwa, " +
+                "czy_nocna AS czyNocna, " +
+                "liczba_przystankow AS liczbaPrzystankow " +
+                "FROM linie";
+        return namedParameterJdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Linie.class));
+    }
 
+    // Implementacja innych metod CRUD (save, get, update, delete)
+}

@@ -1,62 +1,64 @@
 package bada_bdbt_project.SpringApplication;
 
-public class Linie
-{
+public class Linie {
+    private String nrLinii; // Zmieniono z int na String
+    private Integer nrPrzedsiebiorstwa; // Użycie Integer zamiast int
+    private String czyNocna;
+    private Integer liczbaPrzystankow;
 
-    public Linie(int nr_linii, int nr_przedsiebiorstwa, String czy_nocna, int liczba_przystankow) {
-        Nr_linii = nr_linii;
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
-        Czy_nocna = czy_nocna;
-        Liczba_przystankow = liczba_przystankow;
-    }
-
+    // Konstruktor bezparametrowy
     public Linie() {
     }
 
-    private int Nr_linii;
-    private int Liczba_przystankow;
-    private String Czy_nocna;
-    private int Nr_przedsiebiorstwa;
-
-    public int getNr_linii() {
-        return Nr_linii;
+    // Konstruktor z parametrami
+    public Linie(String nrLinii, Integer nrPrzedsiebiorstwa, String czyNocna, Integer liczbaPrzystankow) {
+        this.nrLinii = nrLinii;
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
+        this.czyNocna = czyNocna;
+        this.liczbaPrzystankow = liczbaPrzystankow;
     }
 
-    public void setNr_linii(int nr_linii) {
-        Nr_linii = nr_linii;
+    // Gettery i Settery
+    public String getNrLinii() {
+        return nrLinii;
     }
 
-    public int getNr_przedsiebiorstwa() {
-        return Nr_przedsiebiorstwa;
+    public void setNrLinii(String nrLinii) {
+        this.nrLinii = nrLinii;
     }
 
-    public void setNr_przedsiebiorstwa(int nr_przedsiebiorstwa) {
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
+    public Integer getNrPrzedsiebiorstwa() {
+        return nrPrzedsiebiorstwa;
     }
 
-    public String getCzy_nocna() {
-        return Czy_nocna;
+    public void setNrPrzedsiebiorstwa(Integer nrPrzedsiebiorstwa) {
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
     }
 
-    public void setCzy_nocna(String czy_nocna) {
-        Czy_nocna = czy_nocna;
+    public String getCzyNocna() {
+        return czyNocna;
     }
 
-    public int getLiczba_przystankow() {
-        return Liczba_przystankow;
+    public void setCzyNocna(String czyNocna) {
+        this.czyNocna = czyNocna;
     }
 
-    public void setLiczba_przystankow(int liczba_przystankow) {
-        Liczba_przystankow = liczba_przystankow;
+    public Integer getLiczbaPrzystankow() {
+        return liczbaPrzystankow;
     }
 
+    public void setLiczbaPrzystankow(Integer liczbaPrzystankow) {
+        this.liczbaPrzystankow = liczbaPrzystankow;
+    }
+
+    // Metoda toString
     @Override
     public String toString() {
         return "Linie{" +
-                "Nr_linii=" + Nr_linii +
-                ", Liczba_przystankow=" + Liczba_przystankow +
-                ", Czy_nocna='" + Czy_nocna + '\'' +
-                ", Nr_przedsiebiorstwa=" + Nr_przedsiebiorstwa +
+                "nrLinii='" + nrLinii + '\'' +
+                ", nrPrzedsiebiorstwa=" + nrPrzedsiebiorstwa +
+                ", czyNocna='" + czyNocna + '\'' +
+                ", liczbaPrzystankow=" + liczbaPrzystankow +
                 '}';
     }
 }

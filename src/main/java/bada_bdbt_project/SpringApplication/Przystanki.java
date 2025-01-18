@@ -2,60 +2,60 @@ package bada_bdbt_project.SpringApplication;
 
 public class Przystanki {
 
-    public Przystanki(int nr_przystanku, int nr_adresu, int nr_przedsiebiorstwa, String nazwa_przystanku) {
-        Nr_przystanku = nr_przystanku;
-        Nr_adresu = nr_adresu;
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
-        Nazwa_przystanku = nazwa_przystanku;
+    private int nrPrzystanku;
+    private String nazwaPrzystanku;
+    private int nrPrzedsiebiorstwa;
+    private int nrAdresu;
+
+    public Przystanki(int nrPrzystanku, int nrAdresu, int nrPrzedsiebiorstwa, String nazwaPrzystanku) {
+        this.nrPrzystanku = nrPrzystanku;
+        this.nrAdresu = nrAdresu;
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
+        this.nazwaPrzystanku = nazwaPrzystanku;
     }
 
     public Przystanki() {
     }
 
-    private int Nr_przystanku;
-    private String Nazwa_przystanku;
-    private int Nr_przedsiebiorstwa;
-    private int Nr_adresu;
-
-    public int getNr_przystanku() {
-        return Nr_przystanku;
+    public int getNrPrzystanku() {
+        return nrPrzystanku;
     }
 
-    public void setNr_przystanku(int nr_przystanku) {
-        Nr_przystanku = nr_przystanku;
+    public void setNrPrzystanku(int nrPrzystanku) {
+        this.nrPrzystanku = nrPrzystanku;
     }
 
-    public int getNr_adresu() {
-        return Nr_adresu;
+    public String getNazwaPrzystanku() {
+        return nazwaPrzystanku;
     }
 
-    public void setNr_adresu(int nr_adresu) {
-        Nr_adresu = nr_adresu;
+    public void setNazwaPrzystanku(String nazwaPrzystanku) {
+        this.nazwaPrzystanku = nazwaPrzystanku;
     }
 
-    public int getNr_przedsiebiorstwa() {
-        return Nr_przedsiebiorstwa;
+    public int getNrPrzedsiebiorstwa() {
+        return nrPrzedsiebiorstwa;
     }
 
-    public void setNr_przedsiebiorstwa(int nr_przedsiebiorstwa) {
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
+    public void setNrPrzedsiebiorstwa(int nrPrzedsiebiorstwa) {
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
     }
 
-    public String getNazwa_przystanku() {
-        return Nazwa_przystanku;
+    public int getNrAdresu() {
+        return nrAdresu;
     }
 
-    public void setNazwa_przystanku(String nazwa_przystanku) {
-        Nazwa_przystanku = nazwa_przystanku;
+    public void setNrAdresu(int nrAdresu) {
+        this.nrAdresu = nrAdresu;
     }
 
     @Override
     public String toString() {
         return "Przystanki{" +
-                "Nr_przystanku=" + Nr_przystanku +
-                ", Nazwa_przystanku='" + Nazwa_przystanku + '\'' +
-                ", Nr_przedsiebiorstwa=" + Nr_przedsiebiorstwa +
-                ", Nr_adresu=" + Nr_adresu +
+                "nrPrzystanku=" + nrPrzystanku +
+                ", nazwaPrzystanku='" + nazwaPrzystanku + '\'' +
+                ", nrPrzedsiebiorstwa=" + nrPrzedsiebiorstwa +
+                ", nrAdresu=" + nrAdresu +
                 '}';
     }
 }

@@ -1,71 +1,101 @@
 package bada_bdbt_project.SpringApplication;
 
+import java.time.LocalDateTime;
+
 public class Odjazdy {
-    private int Nr_odjazdu;
-    private String Godzina;
-    private String Czy_na_zadanie;
-    private int Nr_przystanku;
-    //private int Nr_tramwaju; w sumie nwm czy jest nam potrzebny
 
-    public Odjazdy(int nr_odjazdu, int nr_przystanku, String czy_na_zadanie, String godzina /* , int nr_tramwaju*/) {
-        Nr_odjazdu = nr_odjazdu;
-        Nr_przystanku = nr_przystanku;
-        Czy_na_zadanie = czy_na_zadanie;
-        Godzina = godzina;
-     //   Nr_tramwaju = nr_tramwaju;
-    }
+    private Integer nrOdjazdu;
+    private String nrLinii; // Zgodnie z tabelą Linie
+    private String czyNocna;
+    private Integer nrPrzystanku;
+    private String nazwaPrzystanku;
+    private LocalDateTime godzina;
+    private String czyNaZadanie;
 
+    // Konstruktor bezparametrowy
     public Odjazdy() {
     }
 
-    public int getNr_odjazdu() {
-        return Nr_odjazdu;
+    // Konstruktor z parametrami
+    public Odjazdy(Integer nrOdjazdu, String nrLinii, String czyNocna, Integer nrPrzystanku, String nazwaPrzystanku, LocalDateTime godzina, String czyNaZadanie) {
+        this.nrOdjazdu = nrOdjazdu;
+        this.nrLinii = nrLinii;
+        this.czyNocna = czyNocna;
+        this.nrPrzystanku = nrPrzystanku;
+        this.nazwaPrzystanku = nazwaPrzystanku;
+        this.godzina = godzina;
+        this.czyNaZadanie = czyNaZadanie;
     }
 
-    public void setNr_odjazdu(int nr_odjazdu) {
-        Nr_odjazdu = nr_odjazdu;
+    // Gettery i Settery
+
+    public Integer getNrOdjazdu() {
+        return nrOdjazdu;
     }
 
- //   public int getNr_tramwaju() {
-   //     return Nr_tramwaju;
-   // }
-
-   // public void setNr_tramwaju(int nr_tramwaju) {
-     //   Nr_tramwaju = nr_tramwaju;
-   // }
-
-    public int getNr_przystanku() {
-        return Nr_przystanku;
+    public void setNrOdjazdu(Integer nrOdjazdu) {
+        this.nrOdjazdu = nrOdjazdu;
     }
 
-    public void setNr_przystanku(int nr_przystanku) {
-        Nr_przystanku = nr_przystanku;
+    public String getNrLinii() {
+        return nrLinii;
     }
 
-    public String getCzy_na_zadanie() {
-        return Czy_na_zadanie;
+    public void setNrLinii(String nrLinii) {
+        this.nrLinii = nrLinii;
     }
 
-    public void setCzy_na_zadanie(String czy_na_zadanie) {
-        Czy_na_zadanie = czy_na_zadanie;
+    public String getCzyNocna() {
+        return czyNocna;
     }
 
-    public String getGodzina() {
-        return Godzina;
+    public void setCzyNocna(String czyNocna) {
+        this.czyNocna = czyNocna;
     }
 
-    public void setGodzina(String godzina) {
-        Godzina = godzina;
+    public Integer getNrPrzystanku() {
+        return nrPrzystanku;
     }
 
+    public void setNrPrzystanku(Integer nrPrzystanku) {
+        this.nrPrzystanku = nrPrzystanku;
+    }
+
+    public String getNazwaPrzystanku() {
+        return nazwaPrzystanku;
+    }
+
+    public void setNazwaPrzystanku(String nazwaPrzystanku) {
+        this.nazwaPrzystanku = nazwaPrzystanku;
+    }
+
+    public LocalDateTime getGodzina() {
+        return godzina;
+    }
+
+    public void setGodzina(LocalDateTime godzina) {
+        this.godzina = godzina;
+    }
+
+    public String getCzyNaZadanie() {
+        return czyNaZadanie;
+    }
+
+    public void setCzyNaZadanie(String czyNaZadanie) {
+        this.czyNaZadanie = czyNaZadanie;
+    }
+
+    // Metoda toString
     @Override
     public String toString() {
         return "Odjazdy{" +
-                "Nr_odjazdu=" + Nr_odjazdu +
-                ", Godzina='" + Godzina + '\'' +
-                ", Czy_na_zadanie='" + Czy_na_zadanie + '\'' +
-                ", Nr_przystanku=" + Nr_przystanku +
-               // ", Nr_tramwaju=" + Nr_tramwaju +
+                "nrOdjazdu=" + nrOdjazdu +
+                ", nrLinii='" + nrLinii + '\'' +
+                ", czyNocna='" + czyNocna + '\'' +
+                ", nrPrzystanku=" + nrPrzystanku +
+                ", nazwaPrzystanku='" + nazwaPrzystanku + '\'' +
+                ", godzina=" + godzina +
+                ", czyNaZadanie='" + czyNaZadanie + '\'' +
                 '}';
     }
 }

@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
@@ -37,14 +40,58 @@ public class AppController implements WebMvcConfigurer {
     {
 
         @Autowired
-        private BiletyDAO dao;
+        private LinieDAO linieDAO;
 
-        @RequestMapping("/bilety")
-        public String showBilety(Model model) {
+        @Autowired
+        private PrzystankiDAO przystankiDAO;
 
-            List<Bilety> listBilety = dao.list();
-            model.addAttribute("listBilety", listBilety);
-            return "bilety";
+        @Autowired
+        private OdjazdyDAO odjazdyDAO;
+
+        @Autowired
+        private BiletyDAO biletydao;
+
+        // Wyświetlanie rozkładu z możliwością filtrowania
+        @GetMapping({"/rozklad","/rozklad_user"})
+        public String showRozkladForm(Model model, HttpServletRequest request) {
+            List<Linie> linie = linieDAO.list();
+            List<Przystanki> przystanki = przystankiDAO.list();
+            List<Odjazdy> odjazdyList = odjazdyDAO.findAll();
+
+            model.addAttribute("linie", linie);
+            model.addAttribute("przystanki", przystanki);
+            model.addAttribute("odjazdyList", odjazdyList);
+            String uri = request.getRequestURI();
+            if (uri.endsWith("rozklad_user")) {
+                return "user/rozklad_user";
+            }
+
+            return "rozklad";
+        }
+
+
+        @PostMapping({"/rozklad","/rozklad_user"})
+        public String filterRozklad(
+                @RequestParam(required = false) List<String> selectedLinie, // Zmieniono na List<String>
+                @RequestParam(required = false) List<Integer> selectedPrzystanki,
+                Model model, HttpServletRequest request) {
+
+            List<Odjazdy> odjazdyList = odjazdyDAO.findRozklad(selectedLinie, selectedPrzystanki);
+
+            List<Linie> linie = linieDAO.list();
+            List<Przystanki> przystanki = przystankiDAO.list();
+
+            model.addAttribute("linie", linie);
+            model.addAttribute("przystanki", przystanki);
+            model.addAttribute("odjazdyList", odjazdyList);
+            model.addAttribute("selectedLinie", selectedLinie);
+            model.addAttribute("selectedPrzystanki", selectedPrzystanki);
+            String uri = request.getRequestURI();
+            if (uri.endsWith("rozklad_user")) {
+                return "user/rozklad_user";
+            }
+
+            return "rozklad";
         }
 
         @RequestMapping
