@@ -22,9 +22,24 @@ public class BiletyDAO {
         List<Bilety> listBilety = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Bilety.class));
         return listBilety;
     }
-    /* Insert – wstawianie nowego wiersza do bazy */
     public void save(Bilety bilety) {
+        String sql = "INSERT INTO Bilety (NR_BILETU, NAZWA, CZAS_WAZNOSCI, CENA, NR_PRZEDSIEBIORSTWA, IMIE, NAZWISKO, RODZAJ) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        bilety.setNrPrzedsiebiorstwa(1);
+
+        jdbcTemplate.update(sql,
+                bilety.getNrBiletu(),
+                bilety.getNazwa(),
+                bilety.getCzasWaznosci(),
+                bilety.getCena(),
+                bilety.getNrPrzedsiebiorstwa(),
+                bilety.getImie(),
+                bilety.getNazwisko(),
+                bilety.getRodzaj());
     }
+
+
     /* Read – odczytywanie danych z bazy */
     public Bilety get(int id) {
         return null;

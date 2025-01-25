@@ -113,8 +113,9 @@
                 <select multiple class="form-control select2" id="linie" name="selectedLinie">
                     <option th:each="linia : ${linie}"
                             th:value="${linia.nrLinii}"
-                            th:text="${linia.nrLinii + ' - ' + linia.czyNocna}"
-                            th:selected="${selectedLinie != null} ? ${selectedLinie.contains(linia.nrLinii)} : false">
+                            th:text="${linia.nrLinii}"
+                            th:selected="${selectedLinie != null} ? selectedLinie.contains(linia.nrLinii) : false"
+                    >
                     </option>
                 </select>
             </div>
@@ -126,7 +127,8 @@
                     <option th:each="przystanek : ${przystanki}"
                             th:value="${przystanek.nrPrzystanku}"
                             th:text="${przystanek.nazwaPrzystanku}"
-                            th:selected="${selectedPrzystanki != null} ? ${selectedPrzystanki.contains(przystanek.nrPrzystanku)} : false">
+                            th:selected="${selectedPrzystanki != null} ? selectedPrzystanki.contains(przystanek.nrPrzystanku) : false"
+                    >
                     </option>
                 </select>
             </div>
@@ -154,7 +156,7 @@
             <tbody>
             <tr th:each="r : ${odjazdyList}">
                 <td th:text="${r.nrOdjazdu}">Nr Odjazdu</td>
-                <td th:text="${r.nrLinii + ' - ' + r.czyNocna}">Linia</td>
+                <td th:text="${r.nrLinii}">Linia</td>
                 <td th:text="${r.nazwaPrzystanku}">Przystanek</td>
                 <td th:text="${#temporals.format(r.godzina, 'HH:mm')}">Godzina</td>
                 <td th:text="${r.czyNaZadanie}">Czy na zadanie</td>

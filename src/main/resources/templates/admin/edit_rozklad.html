@@ -16,12 +16,12 @@
     <!-- Formularz powiązany z obiektem 'odjazd' -->
     <form th:action="@{/admin/editRozklad}" th:object="${odjazd}" method="post">
         <!-- Ukryte pole z nrOdjazdu (klucz główny w bazie) -->
-        <input type="hidden" th:field="*{nr_odjazdu}" />
+        <input type="hidden" th:field="*{nrOdjazdu}" />
 
         <!-- Wybór tramwaju -->
         <div class="form-group">
             <label for="nrTramwaju">Nr Tramwaju:</label>
-            <select class="form-control" id="nrTramwaju" th:field="*{nr_tramwaju}">
+            <select class="form-control" id="nrTramwaju" th:field="*{nrTramwaju}">
                 <option th:each="tram : ${tramwaje}"
                         th:value="${tram.nrTramwaju}"
                         th:text="${tram.nrTramwaju}"
@@ -33,7 +33,7 @@
         <!-- Wybór linii -->
         <div class="form-group">
             <label for="nrLinii">Linia:</label>
-            <select class="form-control" id="nrLinii" th:field="*{nr_linii}">
+            <select class="form-control" id="nrLinii" th:field="*{nrLinii}">
                 <option th:each="l : ${linie}"
                         th:value="${l.nrLinii}"
                         th:text="${l.nrLinii + ' - ' + l.czyNocna}"
@@ -45,7 +45,7 @@
         <!-- Wybór przystanku (dynamicznie aktualizowany) -->
         <div class="form-group">
             <label for="nrPrzystanku">Przystanek:</label>
-            <select class="form-control" id="nrPrzystanku" th:field="*{nr_przystanku}">
+            <select class="form-control" id="nrPrzystanku" th:field="*{nrPrzystanku}">
                 <option th:each="p : ${przystanki}"
                         th:value="${p.nrPrzystanku}"
                         th:text="${p.nazwaPrzystanku}"
@@ -64,8 +64,8 @@
         <div class="form-group">
             <label for="czyNaZadanie">Czy na żądanie:</label>
             <select class="form-control" id="czyNaZadanie" th:field="*{czyNaZadanie}">
-                <option value="Tak">Tak</option>
                 <option value="Nie">Nie</option>
+                <option value="Tak">Tak</option>
             </select>
         </div>
 

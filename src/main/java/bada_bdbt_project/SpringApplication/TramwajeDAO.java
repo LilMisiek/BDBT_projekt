@@ -1,6 +1,7 @@
 package bada_bdbt_project.SpringApplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -41,12 +42,10 @@ public class TramwajeDAO {
     }
 
     public boolean isTramAssigned(int nrTramwaju) {
-        String sql = "SELECT nr_linii FROM Tramwaje WHERE nr_tramwaju = :tramId";
-        MapSqlParameterSource params = new MapSqlParameterSource("tramId", nrTramwaju);
-
-        String line = namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
-        // jeśli line != null/"" => true
-        return line != null && !line.isEmpty();
+        String sql = "SELECT COUNT(*) FROM Linie WHERE Nr_linii = (SELECT Nr_linii FROM Tramwaje WHERE Nr_tramwaju = :nrTramwaju)";
+        MapSqlParameterSource params = new MapSqlParameterSource("nrTramwaju", nrTramwaju);
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count != null && count > 0;
     }
 
     public List<Tramwaje> listWithAssignedLine() {
@@ -60,43 +59,6 @@ public class TramwajeDAO {
         return namedParameterJdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Tramwaje.class));
     }
 
-
-    /**
-     * Pobiera pojedyńczy Tramwaj po nrTramwaju.
-     */
-    public Tramwaje getById(int nrTramwaju) {
-        String sql = "SELECT " +
-                "  nr_tramwaju, " +
-                "  data_produkcji, " +
-                "  data_zakupu, " +
-                "  data_ostatniego_serwisu, " +
-                "  nr_przedsiebiorstwa, " +
-                "  nr_zajezdni, " +
-                "  nr_linii, " +
-                "  nr_modelu " +
-                "FROM Tramwaje " +
-                "WHERE nr_tramwaju = :tramId";
-
-        MapSqlParameterSource params = new MapSqlParameterSource("tramId", nrTramwaju);
-
-        return namedParameterJdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
-            Tramwaje tram = new Tramwaje();
-            tram.setNrTramwaju(rs.getInt("nr_tramwaju"));
-            // Konwersja z Date do LocalDate:
-            tram.setDataProdukcji(rs.getDate("data_produkcji").toLocalDate());
-            tram.setDataZakupu(rs.getDate("data_zakupu").toLocalDate());
-
-            Date dataSerwisu = rs.getDate("data_ostatniego_serwisu");
-            if (dataSerwisu != null) {
-                tram.setDataOstatniegoSerwisu(dataSerwisu.toLocalDate());
-            }
-            tram.setNrPrzedsiebiorstwa(rs.getInt("nr_przedsiebiorstwa"));
-            tram.setNrZajezdni(rs.getInt("nr_zajezdni"));
-            tram.setNrLinii(rs.getString("nr_linii"));
-            tram.setNrModelu(rs.getInt("nr_modelu"));
-            return tram;
-        });
-    }
 
     /**
      * Dodaje nowy rekord Tramwaje do bazy.
@@ -163,5 +125,23 @@ public class TramwajeDAO {
         String sql = "DELETE FROM Tramwaje WHERE nr_tramwaju = :tramId";
         MapSqlParameterSource params = new MapSqlParameterSource("tramId", nrTramwaju);
         namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    public String getNrLiniiById(int nrTramwaju) {
+        String sql = "SELECT Nr_linii FROM Tramwaje WHERE Nr_tramwaju = :nrTramwaju";
+        MapSqlParameterSource params = new MapSqlParameterSource("nrTramwaju", nrTramwaju);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            // Handle case where tramwaj doesn't exist
+            return null;
+        }
+    }
+    // Method to check if tram exists
+    public boolean existsById(int nrTramwaju) {
+        String sql = "SELECT COUNT(*) FROM Tramwaje WHERE Nr_tramwaju = :nrTramwaju";
+        MapSqlParameterSource params = new MapSqlParameterSource("nrTramwaju", nrTramwaju);
+        Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count != null && count > 0;
     }
 }

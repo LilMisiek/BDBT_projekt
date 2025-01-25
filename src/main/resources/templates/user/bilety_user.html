@@ -1,92 +1,83 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Bilety</title>
+    <meta charset="UTF-8">
+    <title>Zakup Biletu</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Cennik biletów i czas ważności
+            const ticketData = {
+                Jednorazowy: { price: 2.20, duration: "20 minut" },
+                Godzinny: { price: 4.40, duration: "60 minut" },
+                Całodniowy: { price: 12.00, duration: "24H" },
+                Weekendowy: { price: 25.00, duration: "72H" }
+            };
 
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+            // Funkcja obliczania ceny i czasu ważności
+            function updateTicketDetails() {
+                const type = document.getElementById("nazwa").value;
+                const kind = document.getElementById("rodzaj").value;
 
-    <style>
-        body {
-            background: linear-gradient(to left, rgb(254, 202, 202), rgb(220, 38, 38)); /* Gradient jako tło */
-            color: #fff; /* Kolor tekstu dla kontrastu */
-            font-family: 'Arial', sans-serif; /* Czcionka Arial */
-        }
-        .navbar {
-            background-color: #fff; /* Białe tło dla navbar */
-            color: #000; /* Ciemny tekst */
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
+                const ticketInfo = ticketData[type] || { price: 0, duration: "-" };
+                let price = ticketInfo.price;
+                if (kind === "ulgowy") {
+                    price /= 2; // Bilety ulgowe są o połowę tańsze
+                }
 
-        .navbar-brand {
-            margin-left: 0; /* Przesunięcie logo do lewej */
-        }
+                // Aktualizacja ceny i czasu ważności
+                document.getElementById("calculated-price").textContent = price.toFixed(2) + " zł";
+                document.getElementById("czasWaznosci").value = ticketInfo.duration;
+            }
 
-        .navbar-nav {
-            margin-left: 0; /* Przyciski po lewej stronie */
-            flex-direction: row; /* Ustawienie pozycji poziomo */
-        }
+            // Podłączenie eventów do pól formularza
+            document.getElementById("nazwa").addEventListener("change", updateTicketDetails);
+            document.getElementById("rodzaj").addEventListener("change", updateTicketDetails);
 
-        .navbar a.nav-link {
-            color: #000; /* Ustawienie ciemnego koloru linków */
-        }
-
-        .navbar a.nav-link:hover {
-            color: #dc3545; /* Kolor tekstu linków po najechaniu */
-        }
-
-        .nav-item .login-btn {
-            color: #dc3545; /* Czerwony kolor tekstu przycisku Login */
-            border: none; /* Brak obramowania */
-            background: none; /* Przezroczyste tło */
-        }
-
-        .nav-item .login-btn:hover {
-            color: #c82333; /* Ciemniejszy odcień czerwonego tekstu po najechaniu */
-        }
-
-        .navbar-text {
-            color: #007bff; /* Niebieski kolor tekstu */
-            margin-right: 1rem; /* Odstęp od przycisku Wyloguj */
-            font-weight: bold;
-            margin-bottom: 0; /* Ustawienie marginesu dolnego na 0 */
-        }
-
-    </style>
-
+            // Ustawienie domyślnych wartości przy załadowaniu strony
+            updateTicketDetails();
+        });
+    </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light static-top">
-    <div class="container">
-        <a class="navbar-brand" href="/index_user">
-            <img src="/img/logo.png" width="107" height="43" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/index_user}">Strona główna</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Bilety
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/rozklad_user}">Rozkłady jazdy</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto d-flex align-items-center">
-                <span class="navbar-text">Zostałes zalogowany jako User</span>
-                <li class="nav-item">
-                    <a class="login-btn" th:href="@{/main_user}">Wyloguj</a>
-                </li>
-            </ul>
+<div class="container mt-5">
+    <h2>Zakup Biletu</h2>
+    <form th:action="@{/user/bilety_user}" method="post">
+        <div class="form-group">
+            <label for="nazwa">Typ biletu</label>
+            <select class="form-control" id="nazwa" name="nazwa" required>
+                <option value="Jednorazowy">Jednorazowy</option>
+                <option value="Godzinny">Godzinny</option>
+                <option value="Całodniowy">Całodniowy</option>
+                <option value="Weekendowy">Weekendowy</option>
+            </select>
         </div>
-    </div>
-</nav>
+        <div class="form-group">
+            <label for="czasWaznosci">Czas ważności</label>
+            <!-- Pole czas ważności jest wypełniane automatycznie -->
+            <input type="text" class="form-control" id="czasWaznosci" name="czasWaznosci" readonly>
+        </div>
+        <div class="form-group">
+            <label for="imie">Imię</label>
+            <input type="text" class="form-control" id="imie" name="imie" required>
+        </div>
+        <div class="form-group">
+            <label for="nazwisko">Nazwisko</label>
+            <input type="text" class="form-control" id="nazwisko" name="nazwisko" required>
+        </div>
+        <div class="form-group">
+            <label for="rodzaj">Rodzaj biletu</label>
+            <select class="form-control" id="rodzaj" name="rodzaj" required>
+                <option value="normalny">Normalny</option>
+                <option value="ulgowy">Ulgowy</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Cena biletu:</label>
+            <p id="calculated-price" style="font-size: 1.5rem; font-weight: bold;">0.00 zł</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Kup bilet</button>
+    </form>
+</div>
 </body>
 </html>

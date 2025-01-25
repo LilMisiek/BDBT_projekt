@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
@@ -99,17 +101,16 @@ public class AppController implements WebMvcConfigurer {
 
         @GetMapping("/rozklad_admin")
         public String showRozkladAdminForm(Model model) {
-            // pobranie danych
             List<Linie> linie = linieDAO.list();
             List<Przystanki> przystanki = przystankiDAO.list();
             List<Odjazdy> odjazdyList = odjazdyDAO.findAll();
 
-            // przekazanie do modelu
             model.addAttribute("linie", linie);
             model.addAttribute("przystanki", przystanki);
             model.addAttribute("odjazdyList", odjazdyList);
+            model.addAttribute("selectedLinie", new ArrayList<String>());
+            model.addAttribute("selectedPrzystanki", new ArrayList<Integer>());
 
-            // widok admina: admin/rozklad_admin.html
             return "admin/rozklad_admin";
         }
 
@@ -135,41 +136,83 @@ public class AppController implements WebMvcConfigurer {
         public String saveNewOdjazd(@ModelAttribute("odjazd") Odjazdy odjazd,
                                     Model model) {
 
-            // 1) Pobierz info o tramwaju
-            Tramwaje tram = tramwajeDAO.getById(odjazd.getNrTramwaju());
+            int nrTramwaju = odjazd.getNrTramwaju();
 
-            // 2) Sprawdź, czy tramwaj jest już przypisany do jakiejś linii
-            if (tramwajeDAO.isTramAssigned(odjazd.getNrTramwaju())) {
-                // 2A) Jeśli tak, wyświetlamy komunikat w widoku
-                model.addAttribute("errorMessage", "Tramwaj " + tram.getNrTramwaju()
-                        + " jest już przypisany do linii " + tram.getNrLinii());
-                // Wczytujemy listy, żeby formularz się poprawnie wyświetlił
-                model.addAttribute("tramwaje", tramwajeDAO.list());
-                model.addAttribute("przystanki", przystankiDAO.list());
-                model.addAttribute("linie", linieDAO.list());
-                // Zachowujemy wartości wpisane przez użytkownika
-                model.addAttribute("odjazd", odjazd);
-
+            // 1. Check if the tram exists
+            if (!tramwajeDAO.existsById(nrTramwaju)) {
+                model.addAttribute("errorMessage", "Tramwaj o numerze " + nrTramwaju + " nie istnieje.");
+                reloadFormData(model);
                 return "admin/add_odjazd";
             }
 
-            // 3) Sprawdź, czy numer linii tramwaju z bazy != odjazd.nrLinii
-            if (tram.getNrLinii() != null && !tram.getNrLinii().equals(odjazd.getNrLinii())) {
-                // 3A) Komunikat, że to inna linia...
+            // 2. Check if the tram is already assigned to a line
+            if (tramwajeDAO.isTramAssigned(nrTramwaju)) {
+                // Przekazujemy dane do potwierdzenia
+                model.addAttribute("odjazd", odjazd);
+                model.addAttribute("tramwajAssigned", true);
+                model.addAttribute("errorMessage", "Tramwaj " + nrTramwaju + " jest już przypisany do linii " + tramwajeDAO.getNrLiniiById(nrTramwaju) + ".");
+                reloadFormData(model);
+                return "admin/confirm_add_odjazd"; // Nowy szablon potwierdzenia
+            }
+
+            // 3. Check if the line number matches the tram's line
+            String nrLiniiTramwaju = tramwajeDAO.getNrLiniiById(nrTramwaju);
+            if (nrLiniiTramwaju != null && !nrLiniiTramwaju.equals(odjazd.getNrLinii())) {
                 model.addAttribute("errorMessage",
-                        "Wybrany tramwaj (" + tram.getNrTramwaju() + ") jest przypisany do linii "
-                                + tram.getNrLinii() + ", a próbujesz dodać go do linii " + odjazd.getNrLinii()
-                );
-                model.addAttribute("tramwaje", tramwajeDAO.list());
-                model.addAttribute("linie", linieDAO.list());
-                model.addAttribute("odjazd", odjazd);
+                        "Wybrany tramwaj (" + nrTramwaju + ") jest przypisany do linii " + nrLiniiTramwaju
+                                + ", a próbujesz dodać go do linii " + odjazd.getNrLinii());
+                reloadFormData(model);
+                model.addAttribute("odjazd", odjazd); // Preserve user input
                 return "admin/add_odjazd";
             }
 
-            // 4) Jeśli OK, to zapisujemy nowy odjazd
+            // 4. Save the new departure
             odjazdyDAO.save(odjazd);
             return "redirect:/rozklad_admin";
         }
+
+        @PostMapping("/admin/confirm_add_odjazd")
+        public String confirmAddOdjazd(@ModelAttribute("odjazd") Odjazdy odjazd,
+                                       @RequestParam("confirm") boolean confirm,
+                                       Model model) {
+            if (confirm) {
+                // Użytkownik potwierdził przypisanie tramwaju
+                odjazdyDAO.save(odjazd);
+                return "redirect:/rozklad_admin";
+            } else {
+                // Użytkownik anulował przypisanie tramwaju
+                model.addAttribute("message", "Operacja została anulowana.");
+                reloadFormData(model);
+                return "admin/add_odjazd";
+            }
+        }
+
+        private void reloadFormData(Model model) {
+            model.addAttribute("tramwaje", tramwajeDAO.list());
+            model.addAttribute("przystanki", przystankiDAO.list());
+            model.addAttribute("linie", linieDAO.list());
+        }
+
+        @PostMapping("/admin/delete_odjazd/{nrOdjazdu}")
+        public String deleteOdjazd(@PathVariable("nrOdjazdu") int nrOdjazdu, Model model) {
+            try {
+                odjazdyDAO.delete(nrOdjazdu);
+                // Opcjonalnie: Dodaj komunikat sukcesu
+                model.addAttribute("successMessage", "Odjazd został pomyślnie usunięty.");
+            } catch (Exception e) {
+                // Obsłuż błąd, np. dodaj komunikat błędu
+                model.addAttribute("errorMessage", "Wystąpił błąd podczas usuwania odjazdu.");
+            }
+            return "redirect:/rozklad_admin";
+        }
+
+        @GetMapping("/admin/confirm_delete_odjazd/{nrOdjazdu}")
+        public String confirmDeleteOdjazd(@PathVariable("nrOdjazdu") int nrOdjazdu, Model model) {
+            Odjazdy odjazd = odjazdyDAO.getById(nrOdjazdu);
+            model.addAttribute("odjazd", odjazd);
+            return "admin/confirm_delete_odjazd";
+        }
+
 
 
 
@@ -202,6 +245,81 @@ public class AppController implements WebMvcConfigurer {
             // Powrót do listy odjazdów / przystanków
             return "redirect:/rozklad_admin";
         }
+
+        // ==================== BILETY ==================
+
+        private String calculateTicketDuration(String nazwa) {
+            switch (nazwa) {
+                case "Jednorazowy":
+                    return "20 minut";
+                case "Godzinny":
+                    return "60 minut";
+                case "Całodniowy":
+                    return "24H";
+                case "Weekendowy":
+                    return "72H";
+                default:
+                    throw new IllegalArgumentException("Nieznana nazwa biletu: " + nazwa);
+            }
+        }
+
+        @GetMapping("user/bilety_user")
+        public String showBuyTicketForm(Model model) {
+            model.addAttribute("bilet", new Bilety());
+            return "user/bilety_user";
+        }
+
+
+        @PostMapping("user/bilety_user")
+        public String saveTicket(@ModelAttribute("bilet") Bilety bilet, Model model) {
+            try {
+                bilet.setNrBiletu((int) (Math.random() * 100000));
+                bilet.setNrPrzedsiebiorstwa(1);
+
+                // Ustawienie ceny i czasu ważności na backendzie
+                float calculatedPrice = calculateTicketPrice(bilet.getNazwa(), bilet.getRodzaj());
+                String calculatedDuration = calculateTicketDuration(bilet.getNazwa());
+                bilet.setCena(calculatedPrice);
+                bilet.setCzasWaznosci(calculatedDuration);
+
+                biletydao.save(bilet);
+
+                model.addAttribute("successMessage", "Bilet został pomyślnie zakupiony! Cena: " + calculatedPrice + " zł");
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Wystąpił błąd podczas zakupu biletu.");
+            }
+            return "user/bilety_user";
+        }
+
+
+        private float calculateTicketPrice(String nazwa, String rodzaj) {
+            float price;
+
+            switch (nazwa) {
+                case "Jednorazowy":
+                    price = 2.20f;
+                    break;
+                case "Godzinny":
+                    price = 4.40f;
+                    break;
+                case "Całodniowy":
+                    price = 12.00f;
+                    break;
+                case "Weekendowy":
+                    price = 25.00f;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Nieznana nazwa biletu: " + nazwa);
+            }
+
+            if ("ulgowy".equalsIgnoreCase(rodzaj)) {
+                price /= 2; // Bilety ulgowe są o połowę tańsze
+            }
+
+            return price;
+        }
+
+
 
         // =================== LINIE ===================
         @GetMapping("/admin/add_linie")
@@ -237,28 +355,26 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping("/rozklad_admin")
         public String filterRozkladAdmin(
-                @RequestParam(required = false) List<String> selectedLinie,
+                @RequestParam(required = false) List<String> selectedLinie, // Zmieniono na List<String>
                 @RequestParam(required = false) List<Integer> selectedPrzystanki,
-                Model model) {
+                Model model, HttpServletRequest request) {
 
-            // filtruj
             List<Odjazdy> odjazdyList = odjazdyDAO.findRozklad(selectedLinie, selectedPrzystanki);
 
-            // pobierz ponownie listę linii, przystanków
             List<Linie> linie = linieDAO.list();
             List<Przystanki> przystanki = przystankiDAO.list();
 
-            // dodaj do modelu
             model.addAttribute("linie", linie);
             model.addAttribute("przystanki", przystanki);
             model.addAttribute("odjazdyList", odjazdyList);
-
             model.addAttribute("selectedLinie", selectedLinie);
             model.addAttribute("selectedPrzystanki", selectedPrzystanki);
 
-            // wróć do widoku admina
+
+
             return "admin/rozklad_admin";
         }
+
 
         @GetMapping("/admin/editRozklad/{nrOdjazdu}")
         public String showEditOdjazdForm(@PathVariable("nrOdjazdu") int nrOdjazdu, Model model) {

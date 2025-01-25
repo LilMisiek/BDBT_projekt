@@ -3,74 +3,105 @@ package bada_bdbt_project.SpringApplication;
 public class Bilety {
 
 
+    private int nrBiletu;
+    private String nazwa;
+    private String czasWaznosci;
+    private float cena;
+    private int nrPrzedsiebiorstwa;
+    private String imie;
+    private String nazwisko;
+    private String rodzaj;
 
+    public Bilety(){
 
-    private int Nr_biletu;
-    private String Nazwa;
-
-    public Bilety(int nr_biletu, String nazwa, String czas_waznosci, int cena, int nr_przedsiebiorstwa) {
-        Nr_biletu = nr_biletu;
-        Nazwa = nazwa;
-        Czas_waznosci = czas_waznosci;
-        Cena = cena;
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
     }
 
-    public Bilety() {
+    public Bilety(int nrBiletu, String nazwa, String czasWaznosci, float cena, int nrPrzedsiebiorstwa, String imie, String nazwisko, String rodzaj) {
+        this.nrBiletu = nrBiletu;
+        this.nazwa = nazwa;
+        this.czasWaznosci = czasWaznosci;
+        this.cena = cena;
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
+        this.imie = imie;
+        this.nazwisko = nazwisko;
+        this.rodzaj = rodzaj;
     }
 
-    public int getNr_biletu() {
-        return Nr_biletu;
+    public int getNrBiletu() {
+        return nrBiletu;
     }
 
-    public void setNr_biletu(int nr_biletu) {
-        Nr_biletu = nr_biletu;
+    public void setNrBiletu(int nrBiletu) {
+        this.nrBiletu = nrBiletu;
+    }
+
+    public String getNazwa() {
+        return nazwa;
+    }
+
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
+    }
+
+    public String getCzasWaznosci() {
+        return czasWaznosci;
+    }
+
+    public void setCzasWaznosci(String czasWaznosci) {
+        this.czasWaznosci = czasWaznosci;
+    }
+
+    public float getCena() {
+        return cena;
+    }
+
+    public void setCena(float cena) {
+        this.cena = cena;
+    }
+
+    public int getNrPrzedsiebiorstwa() {
+        return nrPrzedsiebiorstwa;
+    }
+
+    public void setNrPrzedsiebiorstwa(int nrPrzedsiebiorstwa) {
+        this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
+    }
+
+    public String getImie() {
+        return imie;
+    }
+
+    public void setImie(String imie) {
+        this.imie = imie;
+    }
+
+    public String getNazwisko() {
+        return nazwisko;
+    }
+
+    public void setNazwisko(String nazwisko) {
+        this.nazwisko = nazwisko;
+    }
+
+    public String getRodzaj() {
+        return rodzaj;
+    }
+
+    public void setRodzaj(String rodzaj) {
+        this.rodzaj = rodzaj;
     }
 
     @Override
     public String toString() {
         return "Bilety{" +
-                "Nr_biletu=" + Nr_biletu +
-                ", Nazwa='" + Nazwa + '\'' +
-                ", Czas_waznosci='" + Czas_waznosci + '\'' +
-                ", Cena=" + Cena +
-                ", Nr_przedsiebiorstwa=" + Nr_przedsiebiorstwa +
+                "nrBiletu=" + nrBiletu +
+                ", nazwa='" + nazwa + '\'' +
+                ", czasWaznosci='" + czasWaznosci + '\'' +
+                ", cena=" + cena +
+                ", nrPrzedsiebiorstwa=" + nrPrzedsiebiorstwa +
+                ", imie='" + imie + '\'' +
+                ", nazwisko='" + nazwisko + '\'' +
+                ", rodzaj='" + rodzaj + '\'' +
                 '}';
     }
-
-    public int getNr_przedsiebiorstwa() {
-        return Nr_przedsiebiorstwa;
-    }
-
-    public void setNr_przedsiebiorstwa(int nr_przedsiebiorstwa) {
-        Nr_przedsiebiorstwa = nr_przedsiebiorstwa;
-    }
-
-    public int getCena() {
-        return Cena;
-    }
-
-    public void setCena(int cena) {
-        Cena = cena;
-    }
-
-    public String getCzas_waznosci() {
-        return Czas_waznosci;
-    }
-
-    public void setCzas_waznosci(String czas_waznosci) {
-        Czas_waznosci = czas_waznosci;
-    }
-
-    public String getNazwa() {
-        return Nazwa;
-    }
-
-    public void setNazwa(String nazwa) {
-        Nazwa = nazwa;
-    }
-
-    private String Czas_waznosci;
-    private int Cena;
-    private int Nr_przedsiebiorstwa;
 }

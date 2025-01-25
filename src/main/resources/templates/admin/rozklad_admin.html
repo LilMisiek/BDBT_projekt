@@ -107,6 +107,12 @@
 <div class="container table-section">
     <h2 class="text-center">Rozkłady Odjazdów (Panel Admina)</h2>
 
+    <!-- Komunikaty Sukcesu -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <!-- Komunikaty Błędów -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
     <!-- (OPCJONALNE) Formularz filtrowania po linii i przystanku -->
     <form th:action="@{/rozklad_admin}" method="post" class="mb-3">
         <div class="form-row justify-content-center">
@@ -116,7 +122,7 @@
                 <select id="linieSelect" name="selectedLinie" class="form-control" multiple>
                     <option th:each="linia : ${linie}"
                             th:value="${linia.nrLinii}"
-                            th:text="${linia.nrLinii + ' - ' + linia.czyNocna}"
+                            th:text="${linia.nrLinii}"
                             th:selected="${selectedLinie != null and #lists.contains(selectedLinie, linia.nrLinii)}">
                     </option>
                 </select>
@@ -165,15 +171,21 @@
                 <td th:text="${o.nrOdjazdu}">Nr Odjazdu</td>
                 <td th:text="${o.nrLinii}">Linia</td>
                 <td th:text="${o.nazwaPrzystanku}">Przystanek</td>
-                <!-- Formatujemy LocalDateTime do HH:mm -->
+                <!-- Formatujemy LocalTime do HH:mm -->
                 <td th:text="${#temporals.format(o.godzina, 'HH:mm')}">Godzina</td>
                 <td th:text="${o.czyNaZadanie}">Czy na żądanie</td>
-
-                <!-- Edycja istniejącego odjazdu -->
                 <td>
+                    <!-- Przycisk Edycji -->
                     <a th:href="@{|/admin/editRozklad/${o.nrOdjazdu}|}" class="btn btn-sm btn-warning">
                         Edytuj
                     </a>
+
+                    <!-- Przycisk Usuwania -->
+                    <form th:action="@{/admin/delete_odjazd/{nrOdjazdu}(nrOdjazdu=${o.nrOdjazdu})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten odjazd?');">
+                            Usuń
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>

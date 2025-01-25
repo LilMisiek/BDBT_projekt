@@ -2,10 +2,13 @@ package bada_bdbt_project.SpringApplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,31 +25,19 @@ public class OdjazdyDAO {
 
     // Pobieranie wszystkich odjazdów
     public List<Odjazdy> findAll() {
-        String sql = "SELECT \n" +
-                "    o.nr_odjazdu, \n" +
-                "    l.nr_linii, \n" +
-                "    l.czy_nocna, \n" +
-                "    p.nr_przystanku, \n" +
-                "    p.nazwa_przystanku, \n" +
-                "    o.godzina, \n" +
-                "    o.czy_na_zadanie, \n" +
-                "    t.nr_tramwaju \n" +
-                "FROM \n" +
-                "    odjazdy o \n" +
-                "JOIN \n" +
-                "    tramwaje t ON o.nr_tramwaju = t.nr_tramwaju \n" +
-                "JOIN \n" +
-                "    linie l ON t.nr_linii = l.nr_linii \n" +
-                "JOIN \n" +
-                "    przystanki p ON o.nr_przystanku = p.nr_przystanku";
+        String sql = "SELECT odjazdy.*, przystanki.nazwa_przystanku " +
+                "FROM odjazdy " +
+                "JOIN przystanki ON odjazdy.nr_przystanku = przystanki.nr_przystanku";
+
+
         return namedParameterJdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Odjazdy.class));
     }
 
     // Metoda do filtrowania odjazdów na podstawie linii i przystanków
     public List<Odjazdy> findRozklad(List<String> selectedLinie, List<Integer> selectedPrzystanki) {
         StringBuilder sql = new StringBuilder(
-                "SELECT o.nr_odjazdu, l.nr_linii, l.czy_nocna, p.nr_przystanku, p.nazwa_przystanku, " +
-                        "o.godzina, o.czy_na_zadanie, t.nr_tramwaju " +
+                "SELECT o.nr_odjazdu, o.nr_linii, p.nazwa_przystanku, " +
+                        "o.godzina, o.czy_na_zadanie " +
                         "FROM odjazdy o " +
                         "JOIN tramwaje t ON o.nr_tramwaju = t.nr_tramwaju " +
                         "JOIN linie l ON t.nr_linii = l.nr_linii " +
@@ -56,18 +47,27 @@ public class OdjazdyDAO {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
 
+        // Dodanie warunku dla wybranych linii, jeśli istnieją
         if (selectedLinie != null && !selectedLinie.isEmpty()) {
             sql.append(" AND l.nr_linii IN (:linie)");
             params.addValue("linie", selectedLinie);
         }
 
+        // Dodanie warunku dla wybranych przystanków, jeśli istnieją
         if (selectedPrzystanki != null && !selectedPrzystanki.isEmpty()) {
             sql.append(" AND p.nr_przystanku IN (:przystanki)");
             params.addValue("przystanki", selectedPrzystanki);
         }
 
+        // Opcjonalnie: Sortowanie wyników, np. według godziny odjazdu
+        sql.append(" ORDER BY o.godzina ASC");
+
+        // Wykonanie zapytania i mapowanie wyników
         return namedParameterJdbcTemplate.query(sql.toString(), params, BeanPropertyRowMapper.newInstance(Odjazdy.class));
     }
+
+
+
 
     public void update(Odjazdy odjazd) {
         String sql = "UPDATE odjazdy " +
@@ -117,18 +117,26 @@ public class OdjazdyDAO {
     // Implementacja innych metod CRUD (save, get, update, delete)
 
     public void save(Odjazdy odjazd) {
-        String sql = """
-        INSERT INTO odjazdy (nr_odjazdu, nr_tramwaju, nr_przystanku, godzina, czy_na_zadanie)
-        VALUES (seq_odjazdy.nextval, :nrTramwaju, :nrPrzystanku, :godzina, :czyNaZadanie)
-        """;
+        // 1. Wstawienie nowego odjazdu
+        String insertSql = "INSERT INTO odjazdy (nr_tramwaju, nr_przystanku, godzina, czy_na_zadanie, nr_linii) " +
+                "VALUES (:nrTramwaju, :nrPrzystanku, :godzina, :czyNaZadanie, :nrLinii)";
+        MapSqlParameterSource insertParams = new MapSqlParameterSource();
 
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("nrTramwaju", odjazd.getNrTramwaju())
-                .addValue("nrPrzystanku", odjazd.getNrPrzystanku())
-                .addValue("godzina", Time.valueOf(odjazd.getGodzina())) // Convert LocalTime to Time
-                .addValue("czyNaZadanie", odjazd.getCzyNaZadanie());
+        insertParams.addValue("nrTramwaju", odjazd.getNrTramwaju());
+        insertParams.addValue("nrPrzystanku", odjazd.getNrPrzystanku());
+        insertParams.addValue("godzina", odjazd.getGodzina());
+        insertParams.addValue("czyNaZadanie", odjazd.getCzyNaZadanie());
+        insertParams.addValue("nrLinii", odjazd.getNrLinii());
 
-        namedParameterJdbcTemplate.update(sql, params);
+        namedParameterJdbcTemplate.update(insertSql, insertParams);
+
+        // 2. Aktualizacja nr_linii w tabeli tramwaje
+        String updateSql = "UPDATE tramwaje SET nr_linii = :nrLinii WHERE nr_tramwaju = :nrTramwaju";
+        MapSqlParameterSource updateParams = new MapSqlParameterSource();
+        updateParams.addValue("nrLinii", odjazd.getNrLinii());
+        updateParams.addValue("nrTramwaju", odjazd.getNrTramwaju());
+
+        namedParameterJdbcTemplate.update(updateSql, updateParams);
     }
 
     /* Read – odczytywanie danych z bazy */
@@ -137,9 +145,10 @@ public class OdjazdyDAO {
     }
 
     /* Delete – wybrany rekord z danym id */
-    public void delete(int id) {
-        String sql = "DELETE FROM odjazdy WHERE nr_odjazdu = :id";
-        MapSqlParameterSource params = new MapSqlParameterSource("id", id);
+    public void delete(int nrOdjazdu) {
+        String sql = "DELETE FROM odjazdy WHERE nr_odjazdu = :nrOdjazdu";
+        MapSqlParameterSource params = new MapSqlParameterSource("nrOdjazdu", nrOdjazdu);
         namedParameterJdbcTemplate.update(sql, params);
     }
+
 }
