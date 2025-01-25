@@ -247,16 +247,30 @@ public class AppController implements WebMvcConfigurer {
         }
 
         // ==================== BILETY ==================
+        @GetMapping("/bilety_admin")
+        public String showAllTickets(Model model) {
+            // Pobranie listy wszystkich biletów z bazy danych
+            List<Bilety> biletyList = biletydao.list();
+
+            // Przekazanie listy do widoku
+            model.addAttribute("listBilety", biletyList);
+
+            // Zwrócenie widoku dla biletów admina
+            return "admin/bilety_admin";
+        }
+
+
+
 
         private String calculateTicketDuration(String nazwa) {
             switch (nazwa) {
                 case "Jednorazowy":
-                    return "20 minut";
+                    return "20";
                 case "Godzinny":
-                    return "60 minut";
+                    return "60";
                 case "Całodniowy":
                     return "24H";
-                case "Weekendowy":
+                case "Trzydniowy":
                     return "72H";
                 default:
                     throw new IllegalArgumentException("Nieznana nazwa biletu: " + nazwa);
@@ -272,24 +286,40 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping("user/bilety_user")
         public String saveTicket(@ModelAttribute("bilet") Bilety bilet, Model model) {
-            try {
-                bilet.setNrBiletu((int) (Math.random() * 100000));
-                bilet.setNrPrzedsiebiorstwa(1);
-
-                // Ustawienie ceny i czasu ważności na backendzie
-                float calculatedPrice = calculateTicketPrice(bilet.getNazwa(), bilet.getRodzaj());
-                String calculatedDuration = calculateTicketDuration(bilet.getNazwa());
-                bilet.setCena(calculatedPrice);
-                bilet.setCzasWaznosci(calculatedDuration);
-
-                biletydao.save(bilet);
-
-                model.addAttribute("successMessage", "Bilet został pomyślnie zakupiony! Cena: " + calculatedPrice + " zł");
-            } catch (Exception e) {
-                model.addAttribute("errorMessage", "Wystąpił błąd podczas zakupu biletu.");
+            // Walidacja pól
+            if (bilet.getImie() == null || bilet.getImie().trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Pole 'Imię' jest wymagane.");
+                return "user/bilety_user";
             }
-            return "user/bilety_user";
+
+            if (bilet.getNazwisko() == null || bilet.getNazwisko().trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Pole 'Nazwisko' jest wymagane.");
+                return "user/bilety_user";
+            }
+
+            // Ustawienia domyślne
+            bilet.setNrPrzedsiebiorstwa(1);
+            bilet.setCena(calculateTicketPrice(bilet.getNazwa(), bilet.getRodzaj()));
+            bilet.setCzasWaznosci(calculateTicketDuration(bilet.getNazwa()));
+
+            // Zapis biletu do bazy
+            biletydao.save(bilet);
+
+            // Pobranie ID biletu (w zależności od Twojej bazy i DAO możesz mieć metodę do pobierania ostatnio dodanego ID)
+            int nrBiletu = biletydao.getLastInsertedId();
+
+            // Przekierowanie na stronę z potwierdzeniem, przekazanie ID biletu
+            return "redirect:/user/confirmation?nrBiletu=" + nrBiletu;
         }
+
+        @GetMapping("/user/confirmation")
+        public String showConfirmation(@RequestParam("nrBiletu") int nrBiletu, Model model) {
+            Bilety bilet = biletydao.get(nrBiletu);
+            model.addAttribute("bilet", bilet);
+            return "user/confirmation";
+        }
+
+
 
 
         private float calculateTicketPrice(String nazwa, String rodzaj) {
@@ -305,7 +335,7 @@ public class AppController implements WebMvcConfigurer {
                 case "Całodniowy":
                     price = 12.00f;
                     break;
-                case "Weekendowy":
+                case "Trzydniowy":
                     price = 25.00f;
                     break;
                 default:

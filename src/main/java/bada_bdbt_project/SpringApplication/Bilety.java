@@ -1,5 +1,8 @@
 package bada_bdbt_project.SpringApplication;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Bilety {
 
 
@@ -51,9 +54,10 @@ public class Bilety {
         this.czasWaznosci = czasWaznosci;
     }
 
-    public float getCena() {
-        return cena;
+    public String getCena() {
+        return String.format("%.2f", cena);
     }
+
 
     public void setCena(float cena) {
         this.cena = cena;

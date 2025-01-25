@@ -92,12 +92,15 @@
                     </a>
 
             </ul>
-            <ul class="navbar-nav ml-auto d-flex align-items-center">
-                <span class="navbar-text">Zostałes zalogowany jako User</span>
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="login-btn" th:href="@{/main_user}">Wyloguj</a>
+                    <span class="navbar-text d-block">Zostałeś zalogowany jako User</span>
+                </li>
+                <li class="nav-item">
+                    <a class="login-btn d-block mt-2" th:href="@{/main_user}">Wyloguj</a>
                 </li>
             </ul>
+
         </div>
     </div>
 </nav>
@@ -114,7 +117,7 @@
                     <option th:each="linia : ${linie}"
                             th:value="${linia.nrLinii}"
                             th:text="${linia.nrLinii}"
-                            th:selected="${selectedLinie != null} ? selectedLinie.contains(linia.nrLinii) : false"
+                            th:selected="${selectedLinie != null and selectedLinie.contains(linia.nrLinii)}"
                     >
                     </option>
                 </select>
@@ -127,7 +130,7 @@
                     <option th:each="przystanek : ${przystanki}"
                             th:value="${przystanek.nrPrzystanku}"
                             th:text="${przystanek.nazwaPrzystanku}"
-                            th:selected="${selectedPrzystanki != null} ? selectedPrzystanki.contains(przystanek.nrPrzystanku) : false"
+                            th:selected="${selectedPrzystanki != null and selectedPrzystanki.contains(przystanek.nrPrzystanku)}"
                     >
                     </option>
                 </select>

@@ -1,47 +1,107 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Zakup Biletu</title>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}">
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Cennik biletów i czas ważności
-            const ticketData = {
-                Jednorazowy: { price: 2.20, duration: "20 minut" },
-                Godzinny: { price: 4.40, duration: "60 minut" },
-                Całodniowy: { price: 12.00, duration: "24H" },
-                Weekendowy: { price: 25.00, duration: "72H" }
-            };
 
-            // Funkcja obliczania ceny i czasu ważności
-            function updateTicketDetails() {
-                const type = document.getElementById("nazwa").value;
-                const kind = document.getElementById("rodzaj").value;
+    <!-- Bootstrap CSS -->
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
 
-                const ticketInfo = ticketData[type] || { price: 0, duration: "-" };
-                let price = ticketInfo.price;
-                if (kind === "ulgowy") {
-                    price /= 2; // Bilety ulgowe są o połowę tańsze
-                }
-
-                // Aktualizacja ceny i czasu ważności
-                document.getElementById("calculated-price").textContent = price.toFixed(2) + " zł";
-                document.getElementById("czasWaznosci").value = ticketInfo.duration;
-            }
-
-            // Podłączenie eventów do pól formularza
-            document.getElementById("nazwa").addEventListener("change", updateTicketDetails);
-            document.getElementById("rodzaj").addEventListener("change", updateTicketDetails);
-
-            // Ustawienie domyślnych wartości przy załadowaniu strony
-            updateTicketDetails();
-        });
-    </script>
+    <style>
+        body {
+            background: linear-gradient(to right, rgb(220, 38, 38), rgb(254, 202, 202) );
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .navbar-brand {
+            margin-left: 0;
+        }
+        .navbar-nav {
+            margin-left: 0;
+            flex-direction: row;
+        }
+        .navbar a.nav-link {
+            color: #000;
+        }
+        .navbar a.nav-link:hover {
+            color: #dc3545;
+        }
+        .nav-item .login-btn {
+            color: #dc3545;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        .nav-item .login-btn:hover {
+            color: #c82333;
+        }
+        .section-header {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-section {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .form-group label {
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>Zakup Biletu</h2>
+<nav class="navbar navbar-expand-lg navbar-light static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/index">
+            <img src="/img/logo.png" width="107" height="43" alt="Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/index_user}">Strona główna</a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Bilety
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/rozklad_user}">Rozkłady jazdy</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <span class="navbar-text me-3">Zostałeś zalogowany jako User</span>
+                <li class="nav-item">
+                    <a class="login-btn" th:href="@{/main_user}">Wyloguj</a>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</nav>
+
+<!-- Sekcja Zakupu Biletu -->
+<div class="container form-section">
+
+    <div id="confirmation-message" class="alert alert-success d-none text-center" role="alert">
+        Dziękujemy za zakup biletu! Szczegóły zakupu zostały zapisane.
+    </div>
+
+
+    <h2 class="section-header">Zakup Biletu</h2>
     <form th:action="@{/user/bilety_user}" method="post">
         <div class="form-group">
             <label for="nazwa">Typ biletu</label>
@@ -49,12 +109,11 @@
                 <option value="Jednorazowy">Jednorazowy</option>
                 <option value="Godzinny">Godzinny</option>
                 <option value="Całodniowy">Całodniowy</option>
-                <option value="Weekendowy">Weekendowy</option>
+                <option value="Trzydniowy">Trzydniowy</option>
             </select>
         </div>
         <div class="form-group">
             <label for="czasWaznosci">Czas ważności</label>
-            <!-- Pole czas ważności jest wypełniane automatycznie -->
             <input type="text" class="form-control" id="czasWaznosci" name="czasWaznosci" readonly>
         </div>
         <div class="form-group">
@@ -76,8 +135,60 @@
             <label>Cena biletu:</label>
             <p id="calculated-price" style="font-size: 1.5rem; font-weight: bold;">0.00 zł</p>
         </div>
-        <button type="submit" class="btn btn-primary">Kup bilet</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-danger">Kup bilet</button>
+        </div>
     </form>
 </div>
+
+<!-- Skrypty Bootstrapa -->
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.2/umd/popper.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ticketData = {
+            Jednorazowy: { price: 2.20, duration: "20 minut" },
+            Godzinny: { price: 4.40, duration: "60 minut" },
+            Całodniowy: { price: 12.00, duration: "24H" },
+            Trzydniowy: { price: 25.00, duration: "72H" }
+        };
+
+        function updateTicketDetails() {
+            const type = document.getElementById("nazwa").value;
+            const kind = document.getElementById("rodzaj").value;
+
+            const ticketInfo = ticketData[type] || { price: 0, duration: "-" };
+            let price = ticketInfo.price;
+            if (kind === "ulgowy") {
+                price /= 2;
+            }
+
+            document.getElementById("calculated-price").textContent = price.toFixed(2) + " zł";
+            document.getElementById("czasWaznosci").value = ticketInfo.duration;
+        }
+
+        document.getElementById("nazwa").addEventListener("change", updateTicketDetails);
+        document.getElementById("rodzaj").addEventListener("change", updateTicketDetails);
+
+        updateTicketDetails();
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const confirmationMessage = document.getElementById("confirmation-message");
+
+        form.addEventListener("submit", function (event) {
+            //event.preventDefault(); // Zatrzymanie domyślnego działania formularza
+
+            // Pokaż komunikat potwierdzenia
+            confirmationMessage.classList.remove("d-none");
+            confirmationMessage.textContent = "Dziękujemy za zakup biletu! Szczegóły zakupu zostały zapisane.";
+
+            // Opcjonalnie zresetuj formularz
+
+        });
+    });
+
+</script>
 </body>
 </html>

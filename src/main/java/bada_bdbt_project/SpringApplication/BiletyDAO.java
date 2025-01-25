@@ -4,46 +4,58 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class BiletyDAO {
     /* Import org.springframework.jd....Template */
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
-    public BiletyDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    public BiletyDAO(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     /* Import java.util.List */
     public List<Bilety> list(){
         String sql = "SELECT * FROM Bilety";
-        List<Bilety> listBilety = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Bilety.class));
-        return listBilety;
+        return namedParameterJdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Bilety.class));
     }
     public void save(Bilety bilety) {
-        String sql = "INSERT INTO Bilety (NR_BILETU, NAZWA, CZAS_WAZNOSCI, CENA, NR_PRZEDSIEBIORSTWA, IMIE, NAZWISKO, RODZAJ) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Bilety (NAZWA, CZAS_WAZNOSCI, CENA, NR_PRZEDSIEBIORSTWA, IMIE, NAZWISKO, RODZAJ) " +
+                "VALUES (:nazwa, :czasWaznosci, :cena, :nrPrzedsiebiorstwa, :imie, :nazwisko, :rodzaj)";
 
         bilety.setNrPrzedsiebiorstwa(1);
 
-        jdbcTemplate.update(sql,
-                bilety.getNrBiletu(),
-                bilety.getNazwa(),
-                bilety.getCzasWaznosci(),
-                bilety.getCena(),
-                bilety.getNrPrzedsiebiorstwa(),
-                bilety.getImie(),
-                bilety.getNazwisko(),
-                bilety.getRodzaj());
+        MapSqlParameterSource insertParams = new MapSqlParameterSource();
+        insertParams.addValue("nazwa", bilety.getNazwa());
+        insertParams.addValue("czasWaznosci", bilety.getCzasWaznosci());
+        insertParams.addValue("cena", bilety.getCena());
+        insertParams.addValue("nrPrzedsiebiorstwa", bilety.getNrPrzedsiebiorstwa());
+        insertParams.addValue("imie", bilety.getImie());
+        insertParams.addValue("nazwisko", bilety.getNazwisko());
+        insertParams.addValue("rodzaj", bilety.getRodzaj());
+
+        namedParameterJdbcTemplate.update(sql, insertParams);
     }
+
+    public int getLastInsertedId() {
+        String sql = "SELECT MAX(NR_BILETU) FROM Bilety";
+        return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, Integer.class);
+    }
+    public Bilety get(int nrBiletu) {
+        String sql = "SELECT * FROM Bilety WHERE NR_BILETU = :nrBiletu";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("nrBiletu", nrBiletu);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(Bilety.class));
+    }
+
 
 
     /* Read – odczytywanie danych z bazy */
-    public Bilety get(int id) {
-        return null;
-    }
     /* Update – aktualizacja danych */
     public void update(Bilety bilety) {
     }

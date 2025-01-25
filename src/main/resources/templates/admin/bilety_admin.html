@@ -1,61 +1,48 @@
-<!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Bilety</title>
-
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <meta charset="UTF-8">
+    <title>Bilety Admin</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
 
     <style>
         body {
-            background: linear-gradient(to left, rgb(254, 202, 202), rgb(220, 38, 38)); /* Gradient jako tło */
-            color: #fff; /* Kolor tekstu dla kontrastu */
-            font-family: 'Arial', sans-serif; /* Czcionka Arial */
+            background: linear-gradient(to right, rgb(254, 202, 202), rgb(220, 38, 38));
+            color: #fff;
+            font-family: 'Arial', sans-serif;
         }
         .navbar {
-            background-color: #fff; /* Białe tło dla navbar */
-            color: #000; /* Ciemny tekst */
+            background-color: #fff;
+            color: #000;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
-
-        .navbar-brand {
-            margin-left: 0; /* Przesunięcie logo do lewej */
-        }
-
-        .navbar-nav {
-            margin-left: 0; /* Przyciski po lewej stronie */
-            flex-direction: row; /* Ustawienie pozycji poziomo */
-        }
-
         .navbar a.nav-link {
-            color: #000; /* Ustawienie ciemnego koloru linków */
+            color: #000;
         }
-
         .navbar a.nav-link:hover {
-            color: #dc3545; /* Kolor tekstu linków po najechaniu */
+            color: #dc3545;
         }
-
-        .nav-item .login-btn {
-            color: #dc3545; /* Czerwony kolor tekstu przycisku Login */
-            border: none; /* Brak obramowania */
-            background: none; /* Przezroczyste tło */
+        table {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
         }
-
-        .nav-item .login-btn:hover {
-            color: #c82333; /* Ciemniejszy odcień czerwonego tekstu po najechaniu */
+        th, td {
+            text-align: center;
+            padding: 10px;
         }
-
-        .navbar-text {
-            color: #007bff; /* Niebieski kolor tekstu */
-            margin-right: 1rem; /* Odstęp od przycisku Wyloguj */
-            font-weight: bold;
-            margin-bottom: 0; /* Ustawienie marginesu dolnego na 0 */
+        th {
+            background-color: #dc3545;
+            color: #fff;
         }
-
     </style>
-
 </head>
 <body>
+
+<!-- Pasek nawigacyjny -->
 <nav class="navbar navbar-expand-lg navbar-light static-top">
     <div class="container">
         <a class="navbar-brand" href="/index_admin">
@@ -67,7 +54,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" th:href="@{/index_admin}">Strona główna</a>
                 </li>
                 <li class="nav-item active">
@@ -80,7 +67,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto d-flex align-items-center">
-                <span class="navbar-text">Zostałes zalogowany jako Admin</span>
+                <span class="navbar-text">Zostałeś zalogowany jako Admin</span>
                 <li class="nav-item">
                     <a class="login-btn" th:href="@{/main_admin}">Wyloguj</a>
                 </li>
@@ -89,27 +76,34 @@
     </div>
 </nav>
 
-<table border = "1" cellpadding = "10"> <!-– border –
-    obramowanie, cellpadding – rozmiar komórki -->
-    <!-- Table header -->
-    <thead>
-    <tr> <!-- Table row -->
-        <th>Nr biletu</th> <!–- Table column -->
-        <th>Cena</th>
-        <th>Nazwa</th>
-        <th>Czas waznosci</th>
-    </tr>
-    </thead>
-    <!-- Table body -->
-    <tbody>
-    <tr th:each = "bilety : ${listBilety}">
-        <td th:text = "${bilety.Nr_biletu}">Nr biletu</td>
-        <td th:text = "${bilety.Cena}">Cena</td>
-        <td th:text = "${bilety.Nazwa}">Nazwa</td>
-        <td th:text = "${bilety.Czas_waznosci}">Czas waznosci</td>
-    </tr>
-    </tbody>
-</table>
+<!-- Tabela z biletami -->
+<div class="container mt-5">
+    <h1 class="text-center">Lista biletów</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Nr Biletu</th>
+            <th>Nazwa</th>
+            <th>Czas Ważności</th>
+            <th>Cena</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Rodzaj</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bilet : ${listBilety}">
+            <td th:text="${bilet.nrBiletu}">Nr Biletu</td>
+            <td th:text="${bilet.nazwa}">Nazwa</td>
+            <td th:text="${bilet.czasWaznosci}">Czas Ważności</td>
+            <td th:text="${bilet.cena}">Cena</td>
+            <td th:text="${bilet.imie}">Imię</td>
+            <td th:text="${bilet.nazwisko}">Nazwisko</td>
+            <td th:text="${bilet.rodzaj}">Rodzaj</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
