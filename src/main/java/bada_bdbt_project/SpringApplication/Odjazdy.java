@@ -1,6 +1,6 @@
 package bada_bdbt_project.SpringApplication;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Odjazdy {
 
@@ -9,15 +9,19 @@ public class Odjazdy {
     private String czyNocna;
     private Integer nrPrzystanku;
     private String nazwaPrzystanku;
-    private LocalDateTime godzina;
+    private LocalTime godzina; // Changed from LocalDateTime to LocalTime
     private String czyNaZadanie;
+    private int nrTramwaju;
+
+    // Constructors, Getters, and Setters
 
     // Konstruktor bezparametrowy
     public Odjazdy() {
     }
 
     // Konstruktor z parametrami
-    public Odjazdy(Integer nrOdjazdu, String nrLinii, String czyNocna, Integer nrPrzystanku, String nazwaPrzystanku, LocalDateTime godzina, String czyNaZadanie) {
+    public Odjazdy(Integer nrOdjazdu, String nrLinii, String czyNocna, Integer nrPrzystanku,
+                   String nazwaPrzystanku, LocalTime godzina, String czyNaZadanie, int nrTramwaju) {
         this.nrOdjazdu = nrOdjazdu;
         this.nrLinii = nrLinii;
         this.czyNocna = czyNocna;
@@ -25,9 +29,10 @@ public class Odjazdy {
         this.nazwaPrzystanku = nazwaPrzystanku;
         this.godzina = godzina;
         this.czyNaZadanie = czyNaZadanie;
+        this.nrTramwaju = nrTramwaju;
     }
 
-    // Gettery i Settery
+    // Getters and Setters
 
     public Integer getNrOdjazdu() {
         return nrOdjazdu;
@@ -69,11 +74,11 @@ public class Odjazdy {
         this.nazwaPrzystanku = nazwaPrzystanku;
     }
 
-    public LocalDateTime getGodzina() {
+    public LocalTime getGodzina() {
         return godzina;
     }
 
-    public void setGodzina(LocalDateTime godzina) {
+    public void setGodzina(LocalTime godzina) {
         this.godzina = godzina;
     }
 
@@ -85,7 +90,15 @@ public class Odjazdy {
         this.czyNaZadanie = czyNaZadanie;
     }
 
-    // Metoda toString
+    public int getNrTramwaju() {
+        return nrTramwaju;
+    }
+
+    public void setNrTramwaju(int nrTramwaju) {
+        this.nrTramwaju = nrTramwaju;
+    }
+
+    // toString method
     @Override
     public String toString() {
         return "Odjazdy{" +
@@ -96,6 +109,7 @@ public class Odjazdy {
                 ", nazwaPrzystanku='" + nazwaPrzystanku + '\'' +
                 ", godzina=" + godzina +
                 ", czyNaZadanie='" + czyNaZadanie + '\'' +
+                ", nrTramwaju=" + nrTramwaju +
                 '}';
     }
 }

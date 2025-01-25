@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Przystanek</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Dodaj nowy Przystanek</h2>
+
+    <!-- Wyświetlenie komunikatu błędu, np. gdyby istniał już przystanek o tej nazwie (opcjonalne) -->
+    <div th:if="${errorMessage}">
+        <div class="alert alert-danger" th:text="${errorMessage}"></div>
+    </div>
+
+    <form th:action="@{/admin/add_przystanek}" th:object="${przystanek}" method="post">
+
+        <!-- Nazwa przystanku -->
+        <div class="form-group">
+            <label for="nazwaPrzystanku">Nazwa Przystanku:</label>
+            <input type="text" class="form-control" id="nazwaPrzystanku"
+                   th:field="*{nazwaPrzystanku}" required />
+        </div>
+
+        <!-- Nie pokazujemy pól nrPrzedsiebiorstwa i nrAdresu
+             bo w kodzie kontrolera/DAO wstawiamy je na sztywno (1).
+        -->
+
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+        <a th:href="@{/rozklad_admin}" class="btn btn-secondary">Anuluj</a>
+    </form>
+</div>
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+</html>

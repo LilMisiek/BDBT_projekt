@@ -2,69 +2,81 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Rozkład Jazdy</title>
+    <title>Rozkład Jazdy (Admin)</title>
 
+    <!-- Bootstrap CSS -->
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 
     <style>
         body {
-            background: linear-gradient(to left, rgb(254, 202, 202), rgb(220, 38, 38)); /* Gradient jako tło */
-            color: #fff; /* Kolor tekstu dla kontrastu */
-            font-family: 'Arial', sans-serif; /* Czcionka Arial */
+            background: linear-gradient(to left, rgb(254, 202, 202), rgb(220, 38, 38));
+            color: #fff;
+            font-family: 'Arial', sans-serif;
         }
         .navbar {
-            background-color: #fff; /* Białe tło dla navbar */
-            color: #000; /* Ciemny tekst */
+            background-color: #fff;
+            color: #000;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
-
         .navbar-brand {
-            margin-left: 0; /* Przesunięcie logo do lewej */
+            margin-left: 0;
         }
-
         .navbar-nav {
-            margin-left: 0; /* Przyciski po lewej stronie */
-            flex-direction: row; /* Ustawienie pozycji poziomo */
+            margin-left: 0;
+            flex-direction: row;
         }
-
         .navbar a.nav-link {
-            color: #000; /* Ustawienie ciemnego koloru linków */
+            color: #000;
         }
-
         .navbar a.nav-link:hover {
-            color: #dc3545; /* Kolor tekstu linków po najechaniu */
+            color: #dc3545;
         }
-
         .nav-item .login-btn {
-            color: #dc3545; /* Czerwony kolor tekstu przycisku Login */
-            border: none; /* Brak obramowania */
-            background: none; /* Przezroczyste tło */
+            color: #dc3545;
+            border: none;
+            background: none;
+            cursor: pointer;
         }
-
         .nav-item .login-btn:hover {
-            color: #c82333; /* Ciemniejszy odcień czerwonego tekstu po najechaniu */
+            color: #c82333;
         }
-
         .navbar-text {
-            color: #007bff; /* Niebieski kolor tekstu */
-            margin-right: 1rem; /* Odstęp od przycisku Wyloguj */
+            color: #007bff;
+            margin-right: 1rem;
             font-weight: bold;
-            margin-bottom: 0; /* Ustawienie marginesu dolnego na 0 */
+            margin-bottom: 0;
         }
-
+        .table-section {
+            margin-top: 30px;
+        }
+        .table thead th {
+            background-color: #343a40;
+            color: #fff;
+        }
+        .table tbody tr {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        /* Przyciski w formularzu filtrowania */
+        .form-inline .form-control {
+            margin-right: 1rem;
+        }
     </style>
 
 </head>
 <body>
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light static-top">
     <div class="container">
-        <a class="navbar-brand" href="/index_admin">
+        <a class="navbar-brand" th:href="@{/index_admin}">
             <img src="/img/logo.png" width="107" height="43" alt="">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <!-- Linki w navbarze -->
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -79,8 +91,10 @@
                     </a>
                 </li>
             </ul>
+
+            <!-- Prawa strona: info o zalogowaniu i wylogowanie -->
             <ul class="navbar-nav ml-auto d-flex align-items-center">
-                <span class="navbar-text">Zostałes zalogowany jako Admin</span>
+                <span class="navbar-text">Zostałeś zalogowany jako Admin</span>
                 <li class="nav-item">
                     <a class="login-btn" th:href="@{/main_admin}">Wyloguj</a>
                 </li>
@@ -88,5 +102,88 @@
         </div>
     </div>
 </nav>
+
+<!-- Sekcja Tabeli Rozkładów -->
+<div class="container table-section">
+    <h2 class="text-center">Rozkłady Odjazdów (Panel Admina)</h2>
+
+    <!-- (OPCJONALNE) Formularz filtrowania po linii i przystanku -->
+    <form th:action="@{/rozklad_admin}" method="post" class="mb-3">
+        <div class="form-row justify-content-center">
+            <!-- Wielokrotny wybór linii -->
+            <div class="col-md-4 mb-2">
+                <label for="linieSelect">Linie:</label>
+                <select id="linieSelect" name="selectedLinie" class="form-control" multiple>
+                    <option th:each="linia : ${linie}"
+                            th:value="${linia.nrLinii}"
+                            th:text="${linia.nrLinii + ' - ' + linia.czyNocna}"
+                            th:selected="${selectedLinie != null and #lists.contains(selectedLinie, linia.nrLinii)}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Wielokrotny wybór przystanków -->
+            <div class="col-md-4 mb-2">
+                <label for="przystankiSelect">Przystanki:</label>
+                <select id="przystankiSelect" name="selectedPrzystanki" class="form-control" multiple>
+                    <option th:each="p : ${przystanki}"
+                            th:value="${p.nrPrzystanku}"
+                            th:text="${p.nazwaPrzystanku}"
+                            th:selected="${selectedPrzystanki != null and #lists.contains(selectedPrzystanki, p.nrPrzystanku)}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 mb-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filtruj</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Przyciski do dodawania nowych rekordów -->
+    <div class="mb-4 text-center">
+        <a th:href="@{/admin/add_odjazd}" class="btn btn-success mr-2">Dodaj Odjazd</a>
+        <a th:href="@{/admin/add_przystanek}" class="btn btn-info mr-2">Dodaj Przystanek</a>
+        <a th:href="@{/admin/add_linie}" class="btn btn-primary">Dodaj Linię</a>
+    </div>
+
+    <!-- Tabela z odjazdami -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead>
+            <tr>
+                <th scope="col">Nr Odjazdu</th>
+                <th scope="col">Linia</th>
+                <th scope="col">Przystanek</th>
+                <th scope="col">Godzina</th>
+                <th scope="col">Czy na żądanie</th>
+                <th scope="col">Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="o : ${odjazdyList}">
+                <td th:text="${o.nrOdjazdu}">Nr Odjazdu</td>
+                <td th:text="${o.nrLinii}">Linia</td>
+                <td th:text="${o.nazwaPrzystanku}">Przystanek</td>
+                <!-- Formatujemy LocalDateTime do HH:mm -->
+                <td th:text="${#temporals.format(o.godzina, 'HH:mm')}">Godzina</td>
+                <td th:text="${o.czyNaZadanie}">Czy na żądanie</td>
+
+                <!-- Edycja istniejącego odjazdu -->
+                <td>
+                    <a th:href="@{|/admin/editRozklad/${o.nrOdjazdu}|}" class="btn btn-sm btn-warning">
+                        Edytuj
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Skrypty Bootstrapa -->
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.2/umd/popper.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
 </body>
 </html>
