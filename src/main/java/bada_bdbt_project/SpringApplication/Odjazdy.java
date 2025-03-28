@@ -5,21 +5,16 @@ import java.time.LocalTime;
 public class Odjazdy {
 
     private Integer nrOdjazdu;
-    private String nrLinii; // Zgodnie z tabelą Linie
+    private String nrLinii;
     private String czyNocna;
     private Integer nrPrzystanku;
     private String nazwaPrzystanku;
-    private LocalTime godzina; // Changed from LocalDateTime to LocalTime
+    private LocalTime godzina;
     private String czyNaZadanie;
     private int nrTramwaju;
-
-    // Constructors, Getters, and Setters
-
-    // Konstruktor bezparametrowy
     public Odjazdy() {
     }
 
-    // Konstruktor z parametrami
     public Odjazdy(Integer nrOdjazdu, String nrLinii, String czyNocna, Integer nrPrzystanku,
                    String nazwaPrzystanku, LocalTime godzina, String czyNaZadanie, int nrTramwaju) {
         this.nrOdjazdu = nrOdjazdu;
@@ -32,7 +27,6 @@ public class Odjazdy {
         this.nrTramwaju = nrTramwaju;
     }
 
-    // Getters and Setters
 
     public Integer getNrOdjazdu() {
         return nrOdjazdu;
@@ -98,7 +92,6 @@ public class Odjazdy {
         this.nrTramwaju = nrTramwaju;
     }
 
-    // toString method
     @Override
     public String toString() {
         return "Odjazdy{" +
