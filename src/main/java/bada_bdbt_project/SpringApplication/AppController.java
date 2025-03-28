@@ -55,7 +55,6 @@ public class AppController implements WebMvcConfigurer {
         @Autowired
         private TramwajeDAO tramwajeDAO;
 
-        // Wyświetlanie rozkładu z możliwością filtrowania
         @GetMapping({"/rozklad","/rozklad_user"})
         public String showRozkladForm(Model model, HttpServletRequest request) {
             List<Linie> linie = linieDAO.list();
@@ -76,7 +75,7 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping({"/rozklad","/rozklad_user"})
         public String filterRozklad(
-                @RequestParam(required = false) List<String> selectedLinie, // Zmieniono na List<String>
+                @RequestParam(required = false) List<String> selectedLinie,
                 @RequestParam(required = false) List<Integer> selectedPrzystanki,
                 Model model, HttpServletRequest request) {
 
@@ -117,9 +116,6 @@ public class AppController implements WebMvcConfigurer {
         @GetMapping("/admin/add_odjazd")
         public String showAddOdjazdForm(Model model) {
             Odjazdy nowyOdjazd = new Odjazdy();
-
-            // zamiast pobierać TYLKO tramwaje z nie-null nr_linii,
-            // pobierz WSZYSTKIE tramwaje
             List<Tramwaje> tramwaje = tramwajeDAO.list();
             List<Przystanki> przystanki = przystankiDAO.list();
             List<Linie> linie = linieDAO.list();
@@ -138,35 +134,34 @@ public class AppController implements WebMvcConfigurer {
 
             int nrTramwaju = odjazd.getNrTramwaju();
 
-            // 1. Check if the tram exists
+
             if (!tramwajeDAO.existsById(nrTramwaju)) {
                 model.addAttribute("errorMessage", "Tramwaj o numerze " + nrTramwaju + " nie istnieje.");
                 reloadFormData(model);
                 return "admin/add_odjazd";
             }
 
-            // 2. Check if the tram is already assigned to a line
+
             if (tramwajeDAO.isTramAssigned(nrTramwaju)) {
-                // Przekazujemy dane do potwierdzenia
                 model.addAttribute("odjazd", odjazd);
                 model.addAttribute("tramwajAssigned", true);
                 model.addAttribute("errorMessage", "Tramwaj " + nrTramwaju + " jest już przypisany do linii " + tramwajeDAO.getNrLiniiById(nrTramwaju) + ".");
                 reloadFormData(model);
-                return "admin/confirm_add_odjazd"; // Nowy szablon potwierdzenia
+                return "admin/confirm_add_odjazd";
             }
 
-            // 3. Check if the line number matches the tram's line
+
             String nrLiniiTramwaju = tramwajeDAO.getNrLiniiById(nrTramwaju);
             if (nrLiniiTramwaju != null && !nrLiniiTramwaju.equals(odjazd.getNrLinii())) {
                 model.addAttribute("errorMessage",
                         "Wybrany tramwaj (" + nrTramwaju + ") jest przypisany do linii " + nrLiniiTramwaju
                                 + ", a próbujesz dodać go do linii " + odjazd.getNrLinii());
                 reloadFormData(model);
-                model.addAttribute("odjazd", odjazd); // Preserve user input
+                model.addAttribute("odjazd", odjazd);
                 return "admin/add_odjazd";
             }
 
-            // 4. Save the new departure
+
             odjazdyDAO.save(odjazd);
             return "redirect:/rozklad_admin";
         }
@@ -176,11 +171,9 @@ public class AppController implements WebMvcConfigurer {
                                        @RequestParam("confirm") boolean confirm,
                                        Model model) {
             if (confirm) {
-                // Użytkownik potwierdził przypisanie tramwaju
                 odjazdyDAO.save(odjazd);
                 return "redirect:/rozklad_admin";
             } else {
-                // Użytkownik anulował przypisanie tramwaju
                 model.addAttribute("message", "Operacja została anulowana.");
                 reloadFormData(model);
                 return "admin/add_odjazd";
@@ -197,10 +190,8 @@ public class AppController implements WebMvcConfigurer {
         public String deleteOdjazd(@PathVariable("nrOdjazdu") int nrOdjazdu, Model model) {
             try {
                 odjazdyDAO.delete(nrOdjazdu);
-                // Opcjonalnie: Dodaj komunikat sukcesu
                 model.addAttribute("successMessage", "Odjazd został pomyślnie usunięty.");
             } catch (Exception e) {
-                // Obsłuż błąd, np. dodaj komunikat błędu
                 model.addAttribute("errorMessage", "Wystąpił błąd podczas usuwania odjazdu.");
             }
             return "redirect:/rozklad_admin";
@@ -226,36 +217,27 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping("/admin/add_przystanek")
         public String saveNewPrzystanek(@ModelAttribute("przystanek") Przystanki p, Model model) {
-            // Ustawiamy na sztywno nrAdresu = 1 i nrPrzedsiebiorstwa = 1
             p.setNrAdresu(1);
             p.setNrPrzedsiebiorstwa(1);
 
-            // Sprawdzenie, czy już istnieje w bazie
             if (przystankiDAO.existsByNazwaPrzystanku(p.getNazwaPrzystanku())) {
-                // Wstawienie komunikatu błędu do modelu
                 model.addAttribute("errorMessage",
                         "Przystanek o nazwie '" + p.getNazwaPrzystanku() + "' już istnieje!");
-                // Ponownie wyświetlamy formularz
                 return "admin/add_przystanek";
             }
 
-            // Zapis
             przystankiDAO.save(p);
 
-            // Powrót do listy odjazdów / przystanków
             return "redirect:/rozklad_admin";
         }
 
         // ==================== BILETY ==================
         @GetMapping("/bilety_admin")
         public String showAllTickets(Model model) {
-            // Pobranie listy wszystkich biletów z bazy danych
             List<Bilety> biletyList = biletydao.list();
 
-            // Przekazanie listy do widoku
             model.addAttribute("listBilety", biletyList);
 
-            // Zwrócenie widoku dla biletów admina
             return "admin/bilety_admin";
         }
 
@@ -286,7 +268,6 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping("user/bilety_user")
         public String saveTicket(@ModelAttribute("bilet") Bilety bilet, Model model) {
-            // Walidacja pól
             if (bilet.getImie() == null || bilet.getImie().trim().isEmpty()) {
                 model.addAttribute("errorMessage", "Pole 'Imię' jest wymagane.");
                 return "user/bilety_user";
@@ -297,18 +278,14 @@ public class AppController implements WebMvcConfigurer {
                 return "user/bilety_user";
             }
 
-            // Ustawienia domyślne
             bilet.setNrPrzedsiebiorstwa(1);
             bilet.setCena(calculateTicketPrice(bilet.getNazwa(), bilet.getRodzaj()));
             bilet.setCzasWaznosci(calculateTicketDuration(bilet.getNazwa()));
 
-            // Zapis biletu do bazy
             biletydao.save(bilet);
 
-            // Pobranie ID biletu (w zależności od Twojej bazy i DAO możesz mieć metodę do pobierania ostatnio dodanego ID)
             int nrBiletu = biletydao.getLastInsertedId();
 
-            // Przekierowanie na stronę z potwierdzeniem, przekazanie ID biletu
             return "redirect:/user/confirmation?nrBiletu=" + nrBiletu;
         }
 
@@ -343,7 +320,7 @@ public class AppController implements WebMvcConfigurer {
             }
 
             if ("ulgowy".equalsIgnoreCase(rodzaj)) {
-                price /= 2; // Bilety ulgowe są o połowę tańsze
+                price /= 2;
             }
 
             return price;
@@ -354,38 +331,31 @@ public class AppController implements WebMvcConfigurer {
         // =================== LINIE ===================
         @GetMapping("/admin/add_linie")
         public String showAddLinieForm(Model model) {
-            // Tworzymy pusty obiekt Linie, ustawiamy domyślne wartości
             Linie nowaLinia = new Linie();
-            // nrPrzedsiebiorstwa zawsze 1, więc można to ustawić z góry
             nowaLinia.setNrPrzedsiebiorstwa(1);
 
             model.addAttribute("linia", nowaLinia);
-            return "admin/add_linie";  // nazwa pliku w templates/admin/add_linie.html
+            return "admin/add_linie"; 
         }
 
         @PostMapping("/admin/add_linie")
         public String saveNewLinie(@ModelAttribute("linia") Linie linia,
                                    Model model) {
-            // Upewniamy się, że nrPrzedsiebiorstwa = 1
             linia.setNrPrzedsiebiorstwa(1);
 
-            // Sprawdzamy, czy w bazie nie istnieje już linia o takim nr_linii
             if (linieDAO.existsByNrLinii(linia.getNrLinii())) {
-                // Jeśli istnieje, to wracamy do formularza z komunikatem błędu
                 model.addAttribute("errorMessage",
                         "Linia o numerze '" + linia.getNrLinii() + "' już istnieje!");
                 return "admin/add_linie";
             }
 
-            // Jeśli nie istnieje, to zapisujemy w bazie
             linieDAO.save(linia);
-            // Po zapisaniu przekierowanie do /rozklad_admin
             return "redirect:/rozklad_admin";
         }
 
         @PostMapping("/rozklad_admin")
         public String filterRozkladAdmin(
-                @RequestParam(required = false) List<String> selectedLinie, // Zmieniono na List<String>
+                @RequestParam(required = false) List<String> selectedLinie,
                 @RequestParam(required = false) List<Integer> selectedPrzystanki,
                 Model model, HttpServletRequest request) {
 
@@ -408,33 +378,26 @@ public class AppController implements WebMvcConfigurer {
 
         @GetMapping("/admin/editRozklad/{nrOdjazdu}")
         public String showEditOdjazdForm(@PathVariable("nrOdjazdu") int nrOdjazdu, Model model) {
-            // 1) Pobierz z bazy danych obiekt Odjazdy
             Odjazdy odjazd = odjazdyDAO.getById(nrOdjazdu);
 
-            // 2) Pobierz listy tramwajów, przystanków i linii
             List<Tramwaje> tramwaje = tramwajeDAO.list();
             List<Przystanki> przystanki = przystankiDAO.list();
             List<Linie> linie = linieDAO.list();
 
-            // 3) Dodaj wszystko do modelu
             model.addAttribute("odjazd", odjazd);
             model.addAttribute("tramwaje", tramwaje);
             model.addAttribute("przystanki", przystanki);
             model.addAttribute("linie", linie);
 
-            // 4) Zwróć widok
             return "admin/edit_rozklad";
         }
 
         @GetMapping("/admin/edit/{nrOdjazdu}")
         public String showEditForm(@PathVariable("nrOdjazdu") Integer nrOdjazdu, Model model) {
-            // 1. Znajdź w bazie odjazd o danym nrOdjazdu
             Odjazdy odjazd = odjazdyDAO.getById(nrOdjazdu);
 
-            // 2. Pobierz listę wszystkich linii (Linie) z bazy
             List<Linie> linie = linieDAO.list();
 
-            // 3. Przekaż obiekt odjazd i listę linii do modelu
             model.addAttribute("odjazd", odjazd);
             model.addAttribute("linie", linie);
 
@@ -445,10 +408,8 @@ public class AppController implements WebMvcConfigurer {
 
         @PostMapping("/admin/editRozklad")
         public String updateOdjazd(@ModelAttribute("odjazd") Odjazdy odjazd) {
-            // Metoda update w DAO zaktualizuje rekord w bazie na podstawie danych z formularza
             odjazdyDAO.update(odjazd);
 
-            // Po zapisaniu przekieruj do /rozklad_admin (lub innej strony), aby zobaczyć listę
             return "redirect:/rozklad_admin";
         }
 
