@@ -17,7 +17,6 @@ public class LinieDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    // Pobieranie wszystkich linii
     public List<Linie> list() {
         String sql = "SELECT nr_linii AS nrLinii, " +
                 "nr_przedsiebiorstwa AS nrPrzedsiebiorstwa, " +
@@ -29,8 +28,7 @@ public class LinieDAO {
 
 
     public void save(Linie linia) {
-        // Wstawiamy nr_linii, nr_przedsiebiorstwa (zawsze 1), czy_nocna
-        // Pomijamy liczba_przystankow
+
         String sql = """
         INSERT INTO linie (nr_linii, nr_przedsiebiorstwa, czy_nocna)
         VALUES (:nrLinii, :nrPrzeds, :czyNocna)
@@ -38,7 +36,7 @@ public class LinieDAO {
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("nrLinii", linia.getNrLinii())
-                .addValue("nrPrzeds", linia.getNrPrzedsiebiorstwa()) // to będzie 1
+                .addValue("nrPrzeds", linia.getNrPrzedsiebiorstwa())
                 .addValue("czyNocna", linia.getCzyNocna());
 
         namedParameterJdbcTemplate.update(sql, params);
