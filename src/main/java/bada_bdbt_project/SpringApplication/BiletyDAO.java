@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BiletyDAO {
-    /* Import org.springframework.jd....Template */
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -19,7 +18,6 @@ public class BiletyDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    /* Import java.util.List */
     public List<Bilety> list(){
         String sql = "SELECT * FROM Bilety";
         return namedParameterJdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Bilety.class));
@@ -55,11 +53,9 @@ public class BiletyDAO {
 
 
 
-    /* Read – odczytywanie danych z bazy */
-    /* Update – aktualizacja danych */
+
     public void update(Bilety bilety) {
     }
-    /* Delete – wybrany rekord z danym id */
     public void delete(int id) {
     }
 
