@@ -2,19 +2,17 @@ package bada_bdbt_project.SpringApplication;
 
 import java.time.LocalDate;
 
-/**
- * Encja Tramwaje odwzorowująca tabelę TRAMWAJE w bazie.
- */
+
 public class Tramwaje {
 
-    private int nrTramwaju;          // PK
+    private int nrTramwaju;          
     private LocalDate dataProdukcji;
     private LocalDate dataZakupu;
     private LocalDate dataOstatniegoSerwisu;
-    private int nrPrzedsiebiorstwa;  // FK do TPM (Nr_przedsiebiorstwa)
-    private Integer nrZajezdni;          // FK do Zajezdnie (Nr_zajezdni)
-    private String nrLinii;          // FK do Linie (Nr_linii, varchar2(2) w bazie)
-    private Integer nrModelu;           // FK do Modele (Nr_modelu)
+    private int nrPrzedsiebiorstwa;  
+    private Integer nrZajezdni;          
+    private String nrLinii;          
+    private Integer nrModelu;           
 
     public Tramwaje() {
     }
