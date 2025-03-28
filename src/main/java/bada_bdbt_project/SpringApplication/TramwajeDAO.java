@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.util.List;
 
-/**
- * DAO do obsługi tabeli TRAMWAJE.
- */
+
 @Repository
 public class TramwajeDAO {
 
@@ -23,9 +21,7 @@ public class TramwajeDAO {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    /**
-     * Pobiera wszystkie rekordy z tabeli TRAMWAJE.
-     */
+
     public List<Tramwaje> list() {
         String sql = "SELECT " +
                 "  nr_tramwaju, " +
@@ -60,9 +56,7 @@ public class TramwajeDAO {
     }
 
 
-    /**
-     * Dodaje nowy rekord Tramwaje do bazy.
-     */
+
     public void save(Tramwaje tramwaj) {
         String sql = "INSERT INTO Tramwaje (" +
                 "nr_tramwaju, data_produkcji, data_zakupu, data_ostatniego_serwisu, " +
@@ -88,9 +82,7 @@ public class TramwajeDAO {
         namedParameterJdbcTemplate.update(sql, params);
     }
 
-    /**
-     * Aktualizuje istniejący rekord Tramwaje w bazie.
-     */
+
     public void update(Tramwaje tramwaj) {
         String sql = "UPDATE Tramwaje SET " +
                 "  data_produkcji = :dataProdukcji, " +
@@ -118,9 +110,7 @@ public class TramwajeDAO {
         namedParameterJdbcTemplate.update(sql, params);
     }
 
-    /**
-     * Usuwa rekord Tramwaje o danym nr_tramwaju.
-     */
+
     public void delete(int nrTramwaju) {
         String sql = "DELETE FROM Tramwaje WHERE nr_tramwaju = :tramId";
         MapSqlParameterSource params = new MapSqlParameterSource("tramId", nrTramwaju);
@@ -133,11 +123,10 @@ public class TramwajeDAO {
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
         } catch (EmptyResultDataAccessException e) {
-            // Handle case where tramwaj doesn't exist
             return null;
         }
     }
-    // Method to check if tram exists
+
     public boolean existsById(int nrTramwaju) {
         String sql = "SELECT COUNT(*) FROM Tramwaje WHERE Nr_tramwaju = :nrTramwaju";
         MapSqlParameterSource params = new MapSqlParameterSource("nrTramwaju", nrTramwaju);
