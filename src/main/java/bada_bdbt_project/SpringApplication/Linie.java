@@ -1,16 +1,16 @@
 package bada_bdbt_project.SpringApplication;
 
 public class Linie {
-    private String nrLinii; // Zmieniono z int na String
-    private Integer nrPrzedsiebiorstwa; // Użycie Integer zamiast int
+    private String nrLinii; 
+    private Integer nrPrzedsiebiorstwa; 
     private String czyNocna;
     private Integer liczbaPrzystankow;
 
-    // Konstruktor bezparametrowy
+
     public Linie() {
     }
 
-    // Konstruktor z parametrami
+
     public Linie(String nrLinii, Integer nrPrzedsiebiorstwa, String czyNocna, Integer liczbaPrzystankow) {
         this.nrLinii = nrLinii;
         this.nrPrzedsiebiorstwa = nrPrzedsiebiorstwa;
@@ -18,7 +18,7 @@ public class Linie {
         this.liczbaPrzystankow = liczbaPrzystankow;
     }
 
-    // Gettery i Settery
+
     public String getNrLinii() {
         return nrLinii;
     }
@@ -51,7 +51,7 @@ public class Linie {
         this.liczbaPrzystankow = liczbaPrzystankow;
     }
 
-    // Metoda toString
+
     @Override
     public String toString() {
         return "Linie{" +
