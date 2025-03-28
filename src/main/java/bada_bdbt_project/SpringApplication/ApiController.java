@@ -15,15 +15,10 @@ public class ApiController {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    /**
-     * Endpoint: pobiera listę przystanków powiązanych z daną linią (nrLinii).
-     * Przykład: GET /api/linie/2/przystanki
-     */
+
     @GetMapping("/linie/{nrLinii}/przystanki")
     public List<Przystanki> getPrzystankiDlaLinii(@PathVariable String nrLinii) {
-        // SQL dopasuj do swojej logiki. Poniżej przykład,
-        // który używa tabel: odjazdy (o), tramwaje (t), linie (l), przystanki (p)
-        // i znajduje WSZYSTKIE unikalne przystanki, które występują na tej linii.
+
         String sql = """
                 SELECT DISTINCT 
                     p.nr_przystanku     AS nrPrzystanku,
