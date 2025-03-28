@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bilety Admin</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
+
+    <style>
+        body {
+            background: linear-gradient(to right, rgb(254, 202, 202), rgb(220, 38, 38));
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .navbar a.nav-link {
+            color: #000;
+        }
+        .navbar a.nav-link:hover {
+            color: #dc3545;
+        }
+        table {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: center;
+            padding: 10px;
+        }
+        th {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Pasek nawigacyjny -->
+<nav class="navbar navbar-expand-lg navbar-light static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/index_admin">
+            <img src="/img/logo.png" width="107" height="43" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/index_admin}">Strona główna</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Bilety
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/rozklad_admin}">Rozkłady jazdy</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <span class="navbar-text">Zostałeś zalogowany jako Admin</span>
+                <li class="nav-item">
+                    <a class="login-btn" th:href="@{/main_admin}">Wyloguj</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Tabela z biletami -->
+<div class="container mt-5">
+    <h1 class="text-center">Lista biletów</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Nr Biletu</th>
+            <th>Nazwa</th>
+            <th>Czas Ważności</th>
+            <th>Cena</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Rodzaj</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bilet : ${listBilety}">
+            <td th:text="${bilet.nrBiletu}">Nr Biletu</td>
+            <td th:text="${bilet.nazwa}">Nazwa</td>
+            <td th:text="${bilet.czasWaznosci}">Czas Ważności</td>
+            <td th:text="${bilet.cena}">Cena</td>
+            <td th:text="${bilet.imie}">Imię</td>
+            <td th:text="${bilet.nazwisko}">Nazwisko</td>
+            <td th:text="${bilet.rodzaj}">Rodzaj</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

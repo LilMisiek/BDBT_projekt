@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodaj Linię</title>
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Dodaj Linię</h2>
+
+  <!-- Blok wyświetlający komunikat błędu, jeśli nr linii jest już zajęty -->
+  <div th:if="${errorMessage}">
+    <div class="alert alert-danger" th:text="${errorMessage}"></div>
+  </div>
+
+  <form th:action="@{/admin/add_linie}" th:object="${linia}" method="post">
+    <!-- nrLinii -->
+    <div class="form-group">
+      <label for="nrLinii">Nr Linii:</label>
+      <input type="text" class="form-control" id="nrLinii"
+             th:field="*{nrLinii}" required/>
+    </div>
+
+    <!-- czyNocna (select: Tak/Nie) -->
+    <div class="form-group">
+      <label for="czyNocna">Czy nocna:</label>
+      <select class="form-control" id="czyNocna" th:field="*{czyNocna}">
+        <option value="Nie">Nie</option>
+        <option value="Tak">Tak</option>
+      </select>
+    </div>
+
+    <!-- Brak pola nrPrzedsiebiorstwa (ustawiamy w kontrolerze na 1) -->
+    <!-- Brak pola liczbaPrzystankow (usunięte) -->
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a th:href="@{/rozklad_admin}" class="btn btn-secondary">Anuluj</a>
+  </form>
+</div>
+
+<!-- Biblioteki JS -->
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+</html>

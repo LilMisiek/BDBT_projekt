@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Potwierdzenie Dodania Odjazdu</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Potwierdzenie Dodania Odjazdu</h2>
+
+    <div class="alert alert-warning">
+        <p>Tramwaj o numerze <strong th:text="${odjazd.nrTramwaju}">Nr Tramwaju</strong> jest już przypisany do linii <strong th:text="${currentLinia}">Aktualna Linia</strong>.</p>
+        <p>Czy na pewno chcesz przypisać ten tramwaj do nowego odjazdu?</p>
+    </div>
+
+    <form th:action="@{/admin/confirm_add_odjazd}" th:object="${odjazd}" method="post">
+        <!-- Ukryte pola zawierające dane odjazdu -->
+
+        <input type="hidden" th:field="*{nrLinii}" />
+        <input type="hidden" th:field="*{czyNocna}" />
+        <input type="hidden" th:field="*{nrPrzystanku}" />
+        <input type="hidden" th:field="*{nazwaPrzystanku}" />
+        <input type="hidden" th:field="*{godzina}" />
+        <input type="hidden" th:field="*{czyNaZadanie}" />
+        <input type="hidden" th:field="*{nrTramwaju}" />
+
+        <button type="submit" name="confirm" value="true" class="btn btn-danger">Potwierdź</button>
+        <button type="submit" name="confirm" value="false" class="btn btn-secondary">Anuluj</button>
+    </form>
+</div>
+
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+</html>

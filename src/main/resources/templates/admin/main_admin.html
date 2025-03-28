@@ -2,65 +2,114 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Main Admin Page</title>
+  <title>Zalogowano</title>
 
-  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
+  <style>
+    body {
+      background: url('/img/login.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #000000;
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
+    .navbar {
+      background-color: rgba(255, 255, 255);
+      color: #000;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 15px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    button.btn {
+      width: 100%;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
 </head>
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+<nav class="navbar navbar-expand-lg navbar-light static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">BDBT Spring Boot Project - Part II</a>
+    <a class="navbar-brand" href="/index_admin">
+      <img src="/img/logo.png" width="107" height="43" alt="">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive"
-            aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/index_admin}">Strona główna</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/bilety_admin}">Bilety</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/rozklad_admin}">Rozkłady jazdy</a>
+        </li>
+      </ul>
       <ul class="navbar-nav ml-auto">
-
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/index}">Home</a>
+          <!-- Button for logout -->
+          <form method="post" th:action="@{/index}" style="display: inline;">
+            <button type="submit" class="logout-btn" onclick="successfullyLogout()">Wyloguj</button>
+          </form>
         </li>
-
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Main
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" th:inline="text" style="color:lightskyblue;">You are logged in as <b
-                  style="text-transform:capitalize">[[${#httpServletRequest.remoteUser}]]</b></a>
-        </li>
-
       </ul>
     </div>
   </div>
 </nav>
 
-<div class="container">
-  <div class="row">
-
-    <div class="col-md-10 mt-5">
-      <form method="post" th:action="@{/index}">
-        <div class="form-group">
-          <label style="font-size:30px" th:inline="text">Welcome <a
-                  style="color:lightskyblue; text-transform:capitalize"><b>[[${#httpServletRequest.remoteUser}]]</b></a>
-            to the main page!</label>
-          <div style="font-size:20px">If you want to logout, click "Logout" button under this text.</div>
-        </div>
-
-        <button class="btn btn-primary" type="submit" onclick="successfullyLogout()" value="Sign Out">Logout
-        </button>
-      </form>
+<div class="login-container">
+  <form method="post" th:action="@{/index}">
+    <div class="form-group">
+      <label style="font-size:30px" th:inline="text">
+        Zostałeś zalogowany jako
+        <a style="color:#007bff; text-transform:capitalize"><b>[[${#httpServletRequest.remoteUser}]]</b></a>
+      </label>
     </div>
-
-  </div>
+  </form>
 </div>
-
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>

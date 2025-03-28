@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodaj Odjazd</title>
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Dodaj nowy Odjazd</h2>
+
+  <!-- Komunikat błędu, jeśli np. tramwaj przypisany do innej linii itp. -->
+  <div th:if="${errorMessage}">
+    <div class="alert alert-danger" th:text="${errorMessage}"></div>
+  </div>
+
+  <form th:action="@{/admin/add_odjazd}" th:object="${odjazd}" method="post">
+
+    <!-- Wybór Tramwaju -->
+    <div class="form-group">
+      <label for="nrTramwaju">Nr Tramwaju:</label>
+      <select class="form-control" id="nrTramwaju" th:field="*{nrTramwaju}">
+        <!--
+          Tutaj każdy tramwaj, niezależnie czy ma nrLinii czy null.
+          Dla czytelności w <option> pokażemy np.
+          "100 (Linia: 02)" lub "101 (bez linii)"
+        -->
+        <option th:each="tram : ${tramwaje}"
+                th:value="${tram.nrTramwaju}"
+                th:text="${tram.nrTramwaju
+                          + (#strings.isEmpty(tram.nrLinii)
+                             ? ' (bez linii)'
+                             : ' (Linia: ' + tram.nrLinii + ')')}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Wybór Przystanku -->
+    <div class="form-group">
+      <label for="nrPrzystanku">Przystanek:</label>
+      <select class="form-control" id="nrPrzystanku" th:field="*{nrPrzystanku}">
+        <option th:each="p : ${przystanki}"
+                th:value="${p.nrPrzystanku}"
+                th:text="${p.nazwaPrzystanku}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Wybór Linii -->
+    <div class="form-group">
+      <label for="nrLinii">Linia:</label>
+      <select class="form-control" id="nrLinii" th:field="*{nrLinii}">
+        <option th:each="l : ${linie}"
+                th:value="${l.nrLinii}"
+                th:text="${l.nrLinii + ' - ' + l.czyNocna}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Godzina Odjazdu -->
+    <div class="form-group">
+      <label for="godzina">Godzina:</label>
+      <input type="time" class="form-control" id="godzina" th:field="*{godzina}" />
+    </div>
+
+    <!-- Czy na żądanie -->
+    <div class="form-group">
+      <label for="czyNaZadanie">Czy na żądanie:</label>
+      <select class="form-control" id="czyNaZadanie" th:field="*{czyNaZadanie}">
+        <option value="Nie">Nie</option>
+        <option value="Tak">Tak</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a th:href="@{/rozklad_admin}" class="btn btn-secondary">Anuluj</a>
+  </form>
+</div>
+
+<script th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+</html>

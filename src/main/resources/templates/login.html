@@ -2,75 +2,129 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Login Page</title>
+  <title>Zaloguj się</title>
 
   <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+  <style>
+    body {
+      background: url('/img/login.png') no-repeat center center fixed; /* Ustawienie tła */
+      background-size: cover; /* Dopasowanie tła do rozmiaru ekranu */
+      color: #000000; /* Kolor tekstu dla kontrastu */
+      font-family: 'Arial', sans-serif; /* Czcionka Arial */
+      height: 100vh; /* Pełna wysokość widoku */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .navbar {
+      background-color: rgba(255, 255, 255); /* Lekko przezroczysty navbar */
+      color: #000; /* Ciemny tekst */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.7); /* Delikatnie przezroczyste tło */
+      border: 1px solid rgba(255, 255, 255, 0.7); /* Przezroczysta ramka */
+      border-radius: 15px; /* Zaokrąglone rogi */
+      padding: 30px;
+      width: 100%;
+      max-width: 400px; /* Maksymalna szerokość pola logowania */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Cień */
+      margin-top: 80px; /* Odstęp od nawigacji */
+    }
+
+    .form-group label {
+      font-weight: bold;
+    }
+
+    button.btn {
+      width: 100%; /* Guzik na całą szerokość */
+    }
+
+    .show-password {
+      margin-top: 5px;
+    }
+  </style>
 
 </head>
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+<nav class="navbar navbar-expand-lg navbar-light static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">BDBT Spring Boot Project - Part II</a>
+    <a class="navbar-brand" href="/index">
+      <img src="/img/logo.png" width="107" height="43" alt="">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive"
-            aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
-
+      <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/index}">Home</a>
+          <a class="nav-link" th:href="@{/index}">Strona główna</a>
         </li>
-
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Login
-            <span class="sr-only">(current)</span>
-          </a>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/bilety}">Bilety</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/rozklad}">Rozkłady jazdy</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class=" login-btn" th:href="@{/main}">Zaloguj</a>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
 
+<div class="login-container">
+  <form method="post" th:action="@{/login}">
 
-<div class="container">
-
-  <div class="row">
-    <div class="col-md-4 mt-5">
-
-      <form method="post" th:action="@{/login}">
-
-        <div class="form-group">
-          <label for="login">Login:</label>
-          <input id="login" type="text" placeholder="Enter login" autocomplete="off" class="form-control" name="username"/>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input id="password" type="password" placeholder="Enter your password" autocomplete="off" class="form-control" name="password"/>
-        </div>
-
-        <div th:if="${param.error}" style="color:red; margin-bottom:15px">
-          ERROR: Invalid username or password!
-        </div>
-
-        <button class="btn btn-primary" type="submit" value="Sign In">Login</button>
-      </form>
-
-
-
+    <div class="form-group">
+      <label for="login">Login:</label>
+      <input id="login" type="text" placeholder="Wpisz login" autocomplete="off" class="form-control" name="username"/>
     </div>
-  </div>
-</div>
 
+    <div class="form-group">
+      <label for="password">Hasło:</label>
+      <input id="password" type="password" placeholder="Wpisz hasło" autocomplete="off" class="form-control" name="password"/>
+      <div class="show-password">
+        <input type="checkbox" id="show-password-toggle"> Pokaż hasło
+      </div>
+    </div>
+
+    <div th:if="${param.error}" style="color:#ff0000; margin-bottom:15px;font-size: 17px;">
+      <b>Błędny login lub hasło!</b>
+    </div>
+
+    <button class="btn btn-primary" type="submit" value="Sign In">Zaloguj</button>
+  </form>
+</div>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+  // Toggle visibility of the password
+  document.getElementById('show-password-toggle').addEventListener('change', function() {
+    const passwordField = document.getElementById('password');
+    if (this.checked) {
+      passwordField.type = 'text';
+    } else {
+      passwordField.type = 'password';
+    }
+  });
+</script>
 
 </body>
 </html>
